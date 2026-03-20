@@ -1,0 +1,166 @@
+﻿Columns: ['id', 'latex', 'tts_audio', 'short_form', 'medium_form', 'conceptual_meaning', 'paper_ref', 'source_file']
+Rows: 445
+
+=== FIRST 20 ENTRIES ===
+  [$C = \frac{\partial \chi}{\partial(\text{choice})} \neq 0] => [When we read this, it is telling us that $C = frac{partial chi}{partia]
+  [$C_{\text{child}} = 0 \text{ or } C_{\text{child}} \ll C_{\text{adult}] => [When we read this, it is telling us that $C_{text{child}} = 0 text{ or]
+  [$C_{\text{zombie}} = \frac{\partial \chi}{\partial(\text{choice})} = 0] => [When we read this, it is telling us that $C_{text{zombie}} = frac{part]
+  [$E_{\text{source}} \geq k_B T \ln(\Omega_{\text{universe}}) \approx 10] => [When we read this, it is telling us that $E_{text{source}} geq k_B T l]
+  [$G(t) = G_0 \exp\left(-\frac{t}{\tau_{\text{grace}}}\right) \cdot \The] => [When we read this, it is telling us that $G(t) = G_0 expleft(-frac{t}{]
+  [$G_0 = \int_{-\infty}^{\infty} E_{\text{grace}}(t) dt = \infty] => [When we read this, it is telling us that $G_0 = int_{-infty}^{infty} E]
+  [$G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu\nu} + \kap] => [When we read this, it is telling us that $G_{munu} + Lambda g_{munu} =]
+  [$G_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu} + \Lambda_{\text{grace}}] => [When we read this, it is telling us that $G_{munu} = frac{8pi G}{c^4} ]
+  [$G_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu\nu} + \kappa\chi_{\mu\nu}] => [When we read this, it is telling us that $G_{munu} = frac{8pi G}{c^4}T]
+  [$G_{\mu\nu}+\Lambda g_{\mu\nu} =8\pi G\big(T_{\mu\nu}^{(m)} +T_{\mu\nu] => [When we read this, it is telling us that $G_{munu}+Lambda g_{munu} =8p]
+  [$H^2 = \frac{8\pi G}{3}\rho\left(1 - \frac{\rho}{\rho_{\text{crit}}}\r] => [When we read this, it is telling us that $H^2 = frac{8pi G}{3}rholeft(]
+  [$H_{\infty} \approx H_0\sqrt{\Omega_\Lambda(1 + R_{J,\max})} \approx 1] => [When we read this, it is telling us that $H_{infty} approx H_0sqrt{Ome]
+  [$K(x) = \min_{p: U(p)=x} |p|] => [When we read this, it is telling us that $K(x) = min_{p: U(p)=x} |p| i]
+  [$K[\text{path}] \propto S[\text{path}]] => [When we read this, it is telling us that $K[text{path}] propto S[text{]
+  [$P(\text{fine-tuned universe} | \text{consciousness fundamental}) \gg ] => [When we read this, it is telling us that $P(text{fine-tuned universe} ]
+  [$P_{\text{outcome}} = P_{\text{baseline}}(1 + \alpha \cdot C \cdot \te] => [When we read this, it is telling us that $P_{text{outcome}} = P_{text{]
+  [$Q_{GD} = \beta \cdot \rho_{DM} \cdot \dot{\phi}] => [When we read this, it is telling us that $Q_{GD} = beta cdot rho_{DM} ]
+  [$Q_{\min} = k_B T \ln 2 \approx 3 \times 10^{-21} \text{ J}] => [When we read this, it is telling us that $Q_{min} = k_B T ln 2 approx ]
+  [$S = \int_{t_1}^{t_2} L(q, \dot{q}, t) \, dt] => [When we read this, it is telling us that $S = int_{t_1}^{t_2} L(q, dot]
+  [$S_8 = \sigma_8\sqrt{\Omega_m/0.3} = 0.798 \pm 0.018] => [When we read this, it is telling us that $S_8 = sigma_8sqrt{Omega_m/0.]
+
+=== SEARCH: chi, grace, coherence ===
+  [$C = \frac{\partial \chi}{\partial(\text{choice})} \neq 0] => [When we read this, it is telling us that $C = frac{partial chi}{partia]
+  [$C_{\text{child}} = 0 \text{ or } C_{\text{child}} \ll C_{\text{adult}] => [When we read this, it is telling us that $C_{text{child}} = 0 text{ or]
+  [$C_{\text{zombie}} = \frac{\partial \chi}{\partial(\text{choice})} = 0] => [When we read this, it is telling us that $C_{text{zombie}} = frac{part]
+  [$G(t) = G_0 \exp\left(-\frac{t}{\tau_{\text{grace}}}\right) \cdot \The] => [When we read this, it is telling us that $G(t) = G_0 expleft(-frac{t}{]
+  [$G_0 = \int_{-\infty}^{\infty} E_{\text{grace}}(t) dt = \infty] => [When we read this, it is telling us that $G_0 = int_{-infty}^{infty} E]
+  [$G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu\nu} + \kap] => [When we read this, it is telling us that $G_{munu} + Lambda g_{munu} =]
+  [$G_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu} + \Lambda_{\text{grace}}] => [When we read this, it is telling us that $G_{munu} = frac{8pi G}{c^4} ]
+  [$G_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu\nu} + \kappa\chi_{\mu\nu}] => [When we read this, it is telling us that $G_{munu} = frac{8pi G}{c^4}T]
+  [$\Box \Psi_S = 0] => [When we read this, it is telling us that $Box Psi_S = 0 in a more natu]
+  [$\alpha D(t) - \beta C(\Psi,\chi)$] => [Moral decay minus grace term: Sin accumulation offset by alignment wit]
+  [$\chi = \chi_{\text{potential}} + \chi_{\text{actualized}}] => [When we read this, it is telling us that $chi = chi_{text{potential}} ]
+  [$\chi = \iiint (G \cdot M \cdot E \cdot S \cdot T \cdot K \cdot R \cdo] => [Chi, the Master Coherence, is calculated by multiplying all ten fundam]
+  [$\chi \circlearrowleft \chi \implies \text{stable attractor}] => [When we read this, it is telling us that $chi circlearrowleft chi impl]
+  [$\chi(t) \cdot \Psi(x) \rightarrow \text{collapse}$] => [Master coherence interacting with quantum state triggers wavefunction ]
+  [$\chi(t+dt) = \mathcal{O}[\chi(t)]] => [When we read this, it is telling us that $chi(t+dt) = mathcal{O}[chi(t]
+  [$\chi(x) \rightarrow e^{i\alpha(x)}\chi(x)] => [When we read this, it is telling us that $chi(x) rightarrow e^{ialpha(]
+  [$\chi_{\infty} = \chi_{max}$] => [Final coherence equals maximum possible coherence.]
+  [$\frac{d\chi}{dt} > 0 \implies \text{External energy input required}] => [When we read this, it is telling us that $frac{dchi}{dt} > 0 implies t]
+  [$\frac{d\mathcal{E}}{dt} = -\alpha D(t) + \beta C(\Psi,\chi)$] => [Moral energy evolution: Changes based on decay from sin and coherence ]
+  [$\frac{d_L^{\text{Grace}}(z) - d_L^{\text{├ÄΓÇ║CDM}}(z)}{d_L^{\text{├Ä] => [When we read this, it is telling us that $frac{d_L^{text{Grace}}(z) - ]
+  [$\frac{d}{dt}|\Psi\rangle = -\frac{i}{\hbar}\hat{H}|\Psi\rangle - \gam] => [When we read this, it is telling us that $frac{d}{dt}|Psirangle = -fra]
+  [$\langle T_{\mu\nu}\rangle_\chi = \frac{\kappa^2}{16\pi^2}(G_{\mu\nu}\] => [When we read this, it is telling us that $langle T_{munu}rangle_chi = ]
+  [$\left(\Box + m_S^2\right)\Psi_S = 0] => [When we read this, it is telling us that $left(Box + m_S^2right)Psi_S ]
+  [$\left[\frac{\chi \cdot \Psi}{\Phi(t)}\right] = \frac{E^1 \cdot E^1}{E] => [When we read this, it is telling us that $left[frac{chi cdot Psi}{Phi(]
+  [$\mathcal{C}[\chi] = \int d^4x \sqrt{-g}\left[\frac{1}{2}g^{\mu\nu}\pa] => [When we read this, it is telling us that $mathcal{C}[chi] = int d^4x s]
+  [$\mathcal{L}_{\text{total}} = \mathcal{L}_{\chi} + \mathcal{L}_{\text{] => [When we read this, it is telling us that $mathcal{L}_{text{total}} = m]
+  [$\nabla \cdot \chi = 0] => [When we read this, it is telling us that $nabla cdot chi = 0 in a more]
+  [$\rho_{\text{actual}}(\Psi, t) = \frac{1}{Z} e^{\chi \cdot \Psi / \Phi] => [When we read this, it is telling us that $rho_{text{actual}}(Psi, t) =]
+  [$\tau_{decoherence} \propto \frac{1}{T}$] => [Decoherence time decreases with temperature: Hot environments destroy ]
+  [**LaTeX:** `G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu] => [When we read this, it is telling us that **LaTeX:** `G_{munu} + Lambda]
+  [**LaTeX:** `\chi(t+dt) = \mathcal{O}[\chi(t)]`
+
+**Reasoning:** Self-re] => [When we read this, it is telling us that **LaTeX:** `chi(t+dt) = mathc]
+  [**LaTeX:** `\nabla \cdot \chi = 0`
+
+**Reasoning:** Zero divergence con] => [When we read this, it is telling us that **LaTeX:** `nabla cdot chi = ]
+  [1 + \alpha\chi^2] => [When we read this, it is telling us that 1 + alphachi^2 in a more natu]
+  [C = \partial \chi / \partial(\text{choice})] => [When we read this, it is telling us that C = partial chi / partial(tex]
+  [G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu\nu} + \kapp] => [When we read this, it is telling us that G_{munu} + Lambda g_{munu} = ]
+  [S_\chi = \int_\Omega \mathcal{L}_\chi \sqrt{-g}\, d^4x] => [When we read this, it is telling us that S_chi = int_Omega mathcal{L}_]
+  [T_{\mu\nu}^{(\chi)} = -\frac{2}{\sqrt{-g}}\frac{\delta(\sqrt{-g}\,\mat] => [When we read this, it is telling us that T_{munu}^{(chi)} = -frac{2}{s]
+  [T_{\mu\nu}^{(\chi)} = \kappa \frac{GCR}{S+\epsilon}(FQ) g_{\mu\nu} + \] => [When we read this, it is telling us that T_{munu}^{(chi)} = kappa frac]
+  [V(\chi)] => [When we read this, it is telling us that V(chi) in a more natural way.]
+  [[\chi] = \frac{\text{Information}}{\text{Volume}} = \frac{\text{bits}}] => [When we read this, it is telling us that [chi] = frac{text{Information]
+  [[\kappa] = \frac{[G_{\mu\nu}]}{[\chi_{\mu\nu}]} = \frac{L^{-2}}{[infor] => [When we read this, it is telling us that [kappa] = frac{[G_{munu}]}{[c]
+  [\Box := \nabla^\mu \nabla_\mu] => [When we read this, it is telling us that Box := nabla^mu nabla_mu in a]
+  [\Box = \partial_\mu \partial^\mu = \frac{1}{c^2}\frac{\partial^2}{\par] => [When we read this, it is telling us that Box = partial_mu partial^mu =]
+  [\Delta D_{sp} = -G_{\text{grace}}] => [When we read this, it is telling us that Delta D_{sp} = -G_{text{grace]
+  [\Huge\chi] => [When we read this, it is telling us that Hugechi in a more natural way]
+  [\boxed{
+-\kappa \frac{GCR}{(S+\epsilon)^2}(FQ) - \lambda_S \Box S = 0
+] => [When we read this, it is telling us that boxed{
+-kappa frac{GCR}{(S+ep]
+  [\boxed{
+FQ \geq \Theta_c(S,G,R) \implies \frac{\partial C}{\partial t}] => [When we read this, it is telling us that boxed{
+FQ geq Theta_c(S,G,R) ]
+  [\boxed{
+G_{\mu\nu} = 8\pi G_N \left(T_{\mu\nu}^{(\text{matter})} + T_{] => [When we read this, it is telling us that boxed{
+G_{munu} = 8pi G_N lef]
+  [\boxed{
+R_{\mu\nu} - \frac{1}{2}g_{\mu\nu}R = 8\pi G_N T_{\mu\nu}^{(\t] => [When we read this, it is telling us that boxed{
+R_{munu} - frac{1}{2}g]
+  [\boxed{
+V = V_0 \exp\left(-g_{\text{[[Theophysics_Glossary#Logos|Logos] => [When we read this, it is telling us that boxed{
+V = V_0 expleft(-g_{te]
+  [\boxed{
+[\chi] = [\nabla_\mu(K|\psi_S|^2)] = [L^{-1} \cdot L^{-2} \cdo] => [When we read this, it is telling us that boxed{
+[chi] = [nabla_mu(K|ps]
+  [\boxed{
+\delta\phi = \frac{\lambda}{c^2} \int KR\, d^3x \sim 10^{-12} ] => [When we read this, it is telling us that boxed{
+deltaphi = frac{lambda]
+  [\boxed{
+\kappa \frac{CR}{S+\epsilon}(FQ)\frac{\partial G}{\partial W^\] => [When we read this, it is telling us that boxed{
+kappa frac{CR}{S+epsil]
+  [\boxed{
+\kappa \frac{GCR}{S+\epsilon} F - \lambda_Q \Box Q = 0
+}] => [When we read this, it is telling us that boxed{
+kappa frac{GCR}{S+epsi]
+  [\boxed{
+\kappa \frac{GCR}{S+\epsilon} Q - \lambda_F \Box F = 0
+}] => [When we read this, it is telling us that boxed{
+kappa frac{GCR}{S+epsi]
+  [\boxed{
+\kappa \frac{GR}{S+\epsilon}(FQ) - \lambda_C \Box C = 0
+}] => [When we read this, it is telling us that boxed{
+kappa frac{GR}{S+epsil]
+  [\boxed{
+\mathcal{L}_\chi = \kappa \frac{GCR}{S+\epsilon}(FQ) - \frac{1] => [When we read this, it is telling us that boxed{
+mathcal{L}_chi = kappa]
+  [\boxed{
+\nabla \cdot \chi = 0
+}] => [When we read this, it is telling us that boxed{
+nabla cdot chi = 0
+} i]
+  [\boxed{
+i\hbar \frac{\partial \psi}{\partial t} = \hat{H}\psi
+}] => [When we read this, it is telling us that boxed{
+ihbar frac{partial psi]
+  [\boxed{\text{Eternal destiny depends ONLY on } \sigma\text{, not } A}] => [When we read this, it is telling us that boxed{text{Eternal destiny de]
+  [\chi = \chi_{\text{potential}} + \chi_{\text{actualized}} + \chi_{\tex] => [When we read this, it is telling us that chi = chi_{text{potential}} +]
+  [\chi = \iiint (G \cdot M \cdot E \cdot S \cdot T \cdot K \cdot R \cdot] => [When we read this, it is telling us that chi = iiint (G cdot M cdot E ]
+  [\chi \circlearrowleft \chi] => [When we read this, it is telling us that chi circlearrowleft chi in a ]
+  [\chi \equiv I] => [When we read this, it is telling us that chi equiv I in a more natural]
+  [\chi \leftrightarrow \chi] => [When we read this, it is telling us that chi leftrightarrow chi in a m]
+  [\chi \rightarrow 0] => [When we read this, it is telling us that chi rightarrow 0 in a more na]
+  [\chi(t) \cdot \frac{d}{dt}\left[\frac{K(\text{universe state})}{|\text] => [When we read this, it is telling us that chi(t) cdot frac{d}{dt}left[f]
+  [\chi(x,t)] => [When we read this, it is telling us that chi(x,t) in a more natural wa]
+  [\chi(x,t) = \rho_{\text{info}}(x,t)] => [When we read this, it is telling us that chi(x,t) = rho_{text{info}}(x]
+  [\chi: M \to \mathbb{C}] => [When we read this, it is telling us that chi: M to mathbb{C} in a more]
+  [\chi_{\mu\nu}] => [When we read this, it is telling us that chi_{munu} in a more natural ]
+  [\frac{\partial \chi}{\partial t} \to 0] => [When we read this, it is telling us that frac{partial chi}{partial t} ]
+  [\frac{dK}{dt} = -\alpha \chi(t)] => [When we read this, it is telling us that frac{dK}{dt} = -alpha chi(t) ]
+  [\frac{d\Lambda}{dt} = -\alpha\chi(t)] => [When we read this, it is telling us that frac{dLambda}{dt} = -alphachi]
+  [\gamma(\chi)] => [When we read this, it is telling us that gamma(chi) in a more natural ]
+  [\hat{O}_{\text{obs}}[\chi] = \chi'] => [When we read this, it is telling us that hat{O}_{text{obs}}[chi] = chi]
+  [\int \chi dV] => [When we read this, it is telling us that int chi dV in a more natural ]
+  [\int \mathcal{C}[\chi] d^4x] => [When we read this, it is telling us that int mathcal{C}[chi] d^4x in a]
+  [\kappa\chi_{\mu\nu}] => [When we read this, it is telling us that kappachi_{munu} in a more nat]
+  [\mathcal{C}[\chi]] => [When we read this, it is telling us that mathcal{C}[chi] in a more nat]
+  [\mathcal{L}_{int}(\chi, \psi)] => [When we read this, it is telling us that mathcal{L}_{int}(chi, psi) in]
+  [\rho_\chi \to 0 \quad \text{and} \quad T_{\mu\nu}^{(\chi)} \to 0] => [When we read this, it is telling us that rho_chi to 0 quad text{and} q]
+  [\text{Coherence } (C) \text{ increases, Entropy } (S) \text{ decreases] => [When we read this, it is telling us that text{Coherence } (C) text{ in]
+  [|\Psi\rangle = \sum_n c_n|n\rangle \xrightarrow{\gamma(\chi)} |m\rangl] => [When we read this, it is telling us that |Psirangle = sum_n c_n|nrangl]
+python : Traceback (most recent call last):
+At line:1 char:116
++ ... -HUB-v2\BetterTTS\normalizer" ; python inspect_master.py 2>&1 | Out-F ...
++                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "C:\Users\lowes\AppData\Roaming\Microsoft\Windows\Start 
+Menu\Programs\Startup\AI-HUB-v2\BetterTTS\normalizer\inspect_master.py", line 17, in <module>
+    print(f"  [{str(row['latex'])[:70]}] => [{str(row['tts_audio'])[:70]}]")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program 
+Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3312.0_x64__qbz5n2kfra8p0\Lib\encodings\cp1252.py", line 
+19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u011c' in position 32: character maps to <undefined>

@@ -1,0 +1,35 @@
+# ============================================================
+# AI-HUB v2 — .gitignore
+# ============================================================
+
+# User-specific config (contains API keys, personal settings)
+config/settings.ini
+config/storage.json
+config/hotkeys.ini
+config/hotstrings.sav
+
+# Server runtime data (user's actual clips/bookmarks/prompts)
+clipsync-bridge/data/*.json
+
+# Clipboard runtime data
+clipboard/config/clipboard_data.json
+clipboard/config/clipboard_settings.ini
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.env
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/

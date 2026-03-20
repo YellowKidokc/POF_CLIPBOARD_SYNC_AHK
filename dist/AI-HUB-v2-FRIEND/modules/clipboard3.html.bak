@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POF 2828 — Clipboard v3</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0c10;--pane:#111318;--card:#151720;--card-hover:#1a1d2a;--border:#222538;--border-sel:#3d4060;--text:#c0c4d0;--text2:#7a7d96;--bright:#eaecf2;--gold:#e8a912;--gold-dim:rgba(232,169,18,.12);--green:#2ecc8e;--green-dim:rgba(46,204,142,.10);--red:#d44;--cyan:#4ac4d4;--cyan-dim:rgba(74,196,212,.08);--purple:#8070c8;--font:'DM Mono','Menlo',monospace;--radius:8px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2a2d40;border-radius:3px}
+body{font-family:var(--font);font-size:11px;line-height:1.4;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;max-width:340px;margin:0 auto}
+.topbar{display:flex;align-items:center;gap:6px;padding:5px 6px;background:var(--pane);border-bottom:1px solid var(--border);flex-shrink:0}
+.search-wrap{flex:1;position:relative}
+.search-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 8px 5px 24px;color:var(--text);font:inherit;outline:none;font-size:10px}
+.search-input:focus{border-color:var(--gold)}
+.search-input::placeholder{color:#2e2e3e}
+.search-icon{position:absolute;left:7px;top:50%;transform:translateY(-50%);color:#2e2e3e;font-size:11px;pointer-events:none}
+.brand{color:var(--gold);font-weight:500;font-size:9px;letter-spacing:1.5px;flex-shrink:0}
+/* TABS — SKINNY */
+.tab-bar{display:flex;background:var(--pane);border-bottom:1px solid var(--border);flex-shrink:0;padding:0 2px}
+.tab{flex:1;padding:4px 0;text-align:center;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);font:inherit;cursor:pointer;font-size:8px;letter-spacing:.6px;text-transform:uppercase}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+/* CARDS */
+.card-scroll{flex:1;overflow-y:auto;padding:4px}
+.slot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.slot-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:6px;min-height:68px;display:flex;flex-direction:column;gap:5px}
+.slot-card.filled{border-color:rgba(232,169,18,.22)}
+.slot-head{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.slot-num{color:var(--gold);font-size:9px;letter-spacing:1px}
+.slot-state{color:var(--text2);font-size:8px;text-transform:uppercase;letter-spacing:.8px}
+.slot-body{flex:1;display:flex;flex-direction:column;gap:2px;min-height:0}
+.slot-title{color:var(--bright);font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot-preview{color:var(--text2);font-size:8px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:22px}
+.slot-actions{display:flex;gap:4px}
+.slot-btn{flex:1;display:flex;align-items:center;justify-content:center;padding:4px 0;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--text2);font:inherit;cursor:pointer;font-size:8px}
+.slot-btn:hover{border-color:var(--gold);color:var(--gold)}
+.slot-btn.copy{color:var(--green);border-color:rgba(46,204,142,.2);background:var(--green-dim)}
+.slot-btn.copy:hover{background:rgba(46,204,142,.18)}
+.slot-btn.edit{max-width:32px}
+.slot-btn.clear{max-width:32px}
+.clip-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:8px;margin-bottom:4px;transition:all .12s}
+.clip-card:hover{background:var(--card-hover);border-color:var(--border-sel)}
+.card-title{font-weight:500;color:var(--bright);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px}
+.card-desc{color:var(--bright);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:5px}
+.card-tags{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:7px}
+.ctag{padding:1px 5px;border:1px solid rgba(74,196,212,.18);border-radius:3px;font-size:8px;letter-spacing:.3px;text-transform:uppercase;color:var(--cyan);background:var(--cyan-dim)}
+.ctag.slot{color:var(--gold);background:var(--gold-dim);border-color:rgba(232,169,18,.2)}
+/* BUTTON ROW */
+.card-btns{display:flex;gap:4px}
+.card-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:3px;padding:5px 0;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text2);font:inherit;cursor:pointer;font-size:9px;transition:all .1s}
+.card-btn:hover{border-color:var(--gold);color:var(--text)}
+.card-btn:active{transform:scale(.95)}
+.card-btn.copy{color:var(--green);border-color:rgba(46,204,142,.2);background:var(--green-dim)}
+.card-btn.copy:hover{background:rgba(46,204,142,.18)}
+.card-btn.pin{font-size:11px;max-width:32px}
+.card-btn.pin.on{color:var(--gold)}
+.card-btn.del{max-width:32px}
+.card-btn.del:hover{color:var(--red);border-color:rgba(221,68,68,.3)}
+.card-btn.edit{max-width:32px}
+.card-btn.edit:hover{color:var(--gold)}
+.history-list{display:flex;flex-direction:column;gap:4px}
+.history-row{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:7px 7px;display:flex;flex-direction:column;gap:6px}
+.history-row:hover{background:var(--card-hover);border-color:var(--border-sel)}
+.history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+.history-meta{min-width:0;flex:1}
+.history-title{color:var(--bright);font-size:10px;font-weight:500;line-height:1.35;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.history-preview{color:var(--bright);font-size:10px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:3px;opacity:.85}
+.history-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.history-time{color:#4e5062;font-size:8px;letter-spacing:.6px}
+.history-actions{display:flex;gap:4px}
+/* Icon buttons — BIGGER icons for star/folder/edit/delete */
+.hbtn{display:flex;align-items:center;justify-content:center;padding:5px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text2);font:inherit;cursor:pointer;font-size:9px}
+.hbtn:hover{border-color:var(--gold);color:var(--gold)}
+.hbtn.copy{min-width:80px;color:var(--green);border-color:rgba(46,204,142,.2);background:var(--green-dim)}
+.hbtn.copy:hover{background:rgba(46,204,142,.18)}
+.hbtn.icon{width:34px;height:34px;padding:0;font-size:15px}
+/* BOTTOM BARS */
+.tools-bar{display:flex;align-items:center;gap:3px;padding:3px 4px;background:var(--pane);border-top:1px solid var(--border);flex-shrink:0}
+.tbtn{padding:3px 6px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--text2);font:inherit;cursor:pointer;font-size:9px}
+.tbtn:hover{border-color:var(--gold);color:var(--gold)}
+.tbtn.on{color:var(--gold);background:var(--gold-dim);border-color:rgba(232,169,18,.3)}
+.tbtn.add{margin-left:auto;color:var(--gold);border-color:rgba(232,169,18,.3);background:var(--gold-dim)}
+/* NAV BAR — 2x BIGGER */
+.nav-bar{display:flex;align-items:center;gap:4px;padding:6px 6px;background:var(--pane);border-top:1px solid var(--border);flex-shrink:0}
+.nbtn{width:48px;height:42px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text2);font:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px}
+.nbtn:hover{border-color:var(--gold);color:var(--gold)}
+.nav-info{flex:1;text-align:center;color:var(--text2);font-size:11px}.nav-info b{color:var(--gold)}
+/* TOAST */
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(40px);background:var(--gold);color:#000;padding:3px 12px;border-radius:4px;font-weight:500;letter-spacing:1px;z-index:200;transition:transform .18s;pointer-events:none;font-size:9px}
+.toast.show{transform:translateX(-50%) translateY(0)}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:100;align-items:center;justify-content:center;padding:8px}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;width:100%;max-width:320px;max-height:85vh;overflow-y:auto}
+.modal h2{font-weight:500;color:var(--gold);letter-spacing:2px;margin-bottom:8px;font-size:10px}
+.modal label{display:block;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin:6px 0 2px;font-size:8px}
+.modal input,.modal textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font:inherit;outline:none;font-size:10px}
+.modal textarea{min-height:80px;resize:vertical}
+.modal input:focus,.modal textarea:focus{border-color:var(--gold)}
+.mrow{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
+.mbtn{padding:4px 12px;border-radius:6px;font:inherit;font-weight:500;cursor:pointer;border:1px solid var(--border);font-size:9px}
+.mbtn.save{background:var(--green);color:#000;border-color:var(--green)}
+.mbtn.cancel{background:transparent;color:var(--text2)}
+.empty{text-align:center;padding:30px 10px;color:#2a2d40;font-size:10px}
+</style>
+</head>
+<body>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="search-wrap"><span class="search-icon">⌕</span><input class="search-input" id="searchInput" placeholder="Search..." autocomplete="off"></div>
+  <span class="brand">POF 2828</span>
+</div>
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab active" data-tab="hotkeys" onclick="setTab('hotkeys')">Hotkeys</button>
+  <button class="tab" data-tab="history" onclick="setTab('history')">History</button>
+  <span id="customTabs"></span>
+  <button class="tab" onclick="addCategory()" style="color:var(--gold);font-size:11px;min-width:24px" title="Add category">+</button>
+</div>
+<!-- CARDS -->
+<div class="card-scroll" id="cardArea"></div>
+<!-- TOOLS -->
+<div class="tools-bar">
+  <button class="tbtn" id="btnPin" onclick="togglePin()">📌</button>
+  <button class="tbtn" id="btnPos" onclick="saveWindowPos()">💾</button>
+  <button class="tbtn" onclick="exportData()">⬇</button>
+  <button class="tbtn" onclick="document.getElementById('fileInput').click()">⬆</button>
+  <button class="tbtn add" onclick="openAdd()">+ New</button>
+</div>
+<!-- NAV — 2x bigger buttons -->
+<div class="nav-bar">
+  <button class="nbtn" onclick="navPage(-1)">◀</button>
+  <button class="nbtn" onclick="moveSelUp()">▲</button>
+  <button class="nbtn" onclick="moveSelDown()">▼</button>
+  <span class="nav-info"><b id="pn">1</b>/<span id="pt">1</span> · <span id="cc">0</span></span>
+  <button class="nbtn" onclick="navPage(1)">▶</button>
+</div>
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+<div class="modal">
+  <h2 id="modalTitle">NEW CLIP</h2>
+  <input type="hidden" id="editId">
+  <label>Content</label><textarea id="fContent" placeholder="Paste or type..."></textarea>
+  <label>Tags (comma sep)</label><input id="fTags" placeholder="code, url, note">
+  <label>Slot (1-20)</label><input id="fSlot" type="number" min="1" max="20" placeholder="e.g. 5">
+  <div class="mrow"><button class="mbtn cancel" onclick="closeModal()">Cancel</button><button class="mbtn save" onclick="saveClip()">Save</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleImport(event)">
+<script>
+const API='http://localhost:3456/api';
+const PS=15;
+let clips=[],sel=-1,pg=0,tab='hotkeys',search='',pinned=false;
+let categories=JSON.parse(localStorage.getItem('pof_categories')||'[]');
+const WINDOW_TITLE='POF 2828';
+function saveCategories(){localStorage.setItem('pof_categories',JSON.stringify(categories))}
+async function load(){try{const r=await fetch(API+'/clips?limit=500');if(r.ok){const d=await r.json();if(Array.isArray(d))clips=d}}catch{}}
+async function cCreate(c){try{await fetch(API+'/clips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(c)})}catch{}}
+async function cSave(c){try{await fetch(API+'/clips/'+c.id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(c)})}catch{}}
+async function cDel(id){try{await fetch(API+'/clips/'+id,{method:'DELETE'})}catch{}}
+function gid(){return 'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)}
+function sig(){return clips.map(c=>c.id+':'+(c.content||'').slice(0,15)).join('|')}
+async function togglePin(force){
+  pinned=typeof force==='boolean'?force:!pinned;
+  document.getElementById('btnPin').classList.toggle('on',pinned);
+  try{
+    const r=await fetch(API.replace('/api','')+'/window/pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:WINDOW_TITLE,pinned})});
+    if(!r.ok)throw new Error('pin');
+    toast(pinned?'Pinned':'Unpinned');
+  }catch{
+    toast('Pin failed');
+  }
+}
+async function saveWindowPos(){
+  const pos={x:screenX,y:screenY,w:outerWidth,h:outerHeight};
+  localStorage.setItem('pof_pos',JSON.stringify(pos));
+  try{
+    const r=await fetch(API.replace('/api','')+'/window/position',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:WINDOW_TITLE,...pos})});
+    if(!r.ok)throw new Error('save');
+    toast('Position saved');
+  }catch{
+    toast('Saved local only');
+  }
+}
+async function restoreWindowPos(){
+  let restored=false;
+  try{
+    const r=await fetch(API+'/window-state');
+    if(r.ok){
+      const state=await r.json();
+      const pos=state.position;
+      const pin=state.pin;
+      if(pos&&typeof pos.x==='number'&&typeof pos.y==='number'){
+        resizeTo(pos.w||outerWidth,pos.h||outerHeight);
+        moveTo(pos.x,pos.y);
+        localStorage.setItem('pof_pos',JSON.stringify(pos));
+        restored=true;
+      }
+      if(pin&&typeof pin.pinned==='boolean'){
+        pinned=pin.pinned;
+        document.getElementById('btnPin').classList.toggle('on',pinned);
+        if(pinned){setTimeout(()=>togglePin(true),150)}
+      }
+    }
+  }catch{}
+  if(restored)return;
+  try{const p=JSON.parse(localStorage.getItem('pof_pos'));if(p){resizeTo(p.w,p.h);moveTo(p.x,p.y)}}catch{}
+}
+function filteredClips(list){
+  const q=search.toLowerCase();
+  if(!q)return list;
+  return list.filter(c=>(c.content||'').toLowerCase().includes(q)||(c.tags||[]).some(t=>t.toLowerCase().includes(q)));
+}
+function clipTitle(c,max=50){const lines=(c.content||'').split('\n');return esc((lines[0]||'').slice(0,max))}
+function clipPreview(c,max=140){return esc(((c.content||'').replace(/\s+/g,' ').trim()).slice(0,max))}
+function formatTs(ts){
+  if(!ts)return '';
+  try{const d=new Date(ts);if(Number.isNaN(d.getTime()))return '';return d.toLocaleString([],{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit'})}catch{return ''}
+}
+function renderHotkeys(area){
+  const slotMap=new Map(filteredClips(clips.filter(c=>c.slot)).map(c=>[String(c.slot),c]));
+  let h='<div class="slot-grid">';
+  for(let n=1;n<=20;n++){
+    const c=slotMap.get(String(n))||slotMap.get(n);
+    if(c){
+      const idx=clips.indexOf(c);
+      h+=`<div class="slot-card filled" id="slot${n}">
+        <div class="slot-head"><span class="slot-num">SLOT ${n}</span><span class="slot-state">ready</span></div>
+        <div class="slot-body"><div class="slot-title">${clipTitle(c,30)}</div><div class="slot-preview">${clipPreview(c,70)}</div></div>
+        <div class="slot-actions">
+          <button class="slot-btn copy" onclick="copyIdx(${idx})">COPY</button>
+          <button class="slot-btn edit" onclick="openEdit(${idx})">✏</button>
+          <button class="slot-btn clear" onclick="clearSlot(${idx})">×</button>
+        </div></div>`;
+    }else{
+      h+=`<div class="slot-card" id="slot${n}">
+        <div class="slot-head"><span class="slot-num">SLOT ${n}</span><span class="slot-state">empty</span></div>
+        <div class="slot-body"><div class="slot-title">Open slot</div><div class="slot-preview">Save a clip into this hotkey lane when you want instant recall.</div></div>
+        <div class="slot-actions"><button class="slot-btn" onclick="openAddWithSlot(${n})">+ SAVE</button></div></div>`;
+    }
+  }
+  area.innerHTML=h+'</div>';
+  document.getElementById('pn').textContent=1;
+  document.getElementById('pt').textContent=1;
+  document.getElementById('cc').textContent='20 slots';
+}
+function renderHistory(area,list){
+  const pinnedItems=list.filter(c=>c.pinned);
+  const flowingItems=list.filter(c=>!c.pinned);
+  const tp=Math.ceil(flowingItems.length/PS)||1;
+  pg=Math.min(pg,tp-1);
+  const paged=flowingItems.slice(pg*PS,(pg+1)*PS);
+  document.getElementById('pn').textContent=pg+1;
+  document.getElementById('pt').textContent=tp;
+  document.getElementById('cc').textContent=list.length;
+  if(!pinnedItems.length&&!paged.length){area.innerHTML='<div class="empty">No clips yet</div>';return}
+  let h='<div class="history-list">';
+  if(pinnedItems.length){
+    h+='<div class="card-tags" style="margin:0 0 2px 0"><span class="ctag slot">Pinned</span></div>';
+    pinnedItems.forEach(c=>{
+      const idx=clips.indexOf(c);
+      const tags=(c.tags||[]).slice(0,3).map(t=>`<span class="ctag">${esc(t)}</span>`).join('');
+      const slotTag=c.slot?`<span class="ctag slot">Slot ${c.slot}</span>`:'';
+      h+=`<div class="history-row" id="cc${idx}">
+        <div class="history-head">
+          <div class="history-meta"><div class="history-title">${clipTitle(c,70)}</div><div class="history-preview">${clipPreview(c,220)}</div></div>
+          <div class="history-side"><div class="history-time">${formatTs(c.ts||c.created_at)}</div><div class="card-tags">${slotTag}${tags}</div></div>
+        </div>
+        <div class="history-actions">
+          <button class="hbtn copy" onclick="copyIdx(${idx})">📋 COPY</button>
+          <button class="hbtn icon" onclick="togglePinClip(${idx})">★</button>
+          <button class="hbtn icon" onclick="openEdit(${idx})">✏</button>
+          <button class="hbtn icon" onclick="addToCategory(${idx})">📁</button>
+          <button class="hbtn icon" onclick="delClip(${idx})">🗑</button>
+        </div></div>`;
+    });
+    if(paged.length){h+='<div class="card-tags" style="margin:2px 0 2px 0"><span class="ctag">History</span></div>'}
+  }
+  paged.forEach(c=>{
+    const idx=clips.indexOf(c);
+    const tags=(c.tags||[]).slice(0,3).map(t=>`<span class="ctag">${esc(t)}</span>`).join('');
+    const slotTag=c.slot?`<span class="ctag slot">Slot ${c.slot}</span>`:'';
+    h+=`<div class="history-row" id="cc${idx}">
+      <div class="history-head">
+        <div class="history-meta"><div class="history-title">${clipTitle(c,70)}</div><div class="history-preview">${clipPreview(c,220)}</div></div>
+        <div class="history-side"><div class="history-time">${formatTs(c.ts||c.created_at)}</div><div class="card-tags">${slotTag}${tags}</div></div>
+      </div>
+      <div class="history-actions">
+        <button class="hbtn copy" onclick="copyIdx(${idx})">📋 COPY</button>
+        <button class="hbtn icon" onclick="togglePinClip(${idx})">${c.pinned?'★':'☆'}</button>
+        <button class="hbtn icon" onclick="openEdit(${idx})">✏</button>
+        <button class="hbtn icon" onclick="addToCategory(${idx})">📁</button>
+        <button class="hbtn icon" onclick="delClip(${idx})">🗑</button>
+      </div></div>`;
+  });
+  area.innerHTML=h+'</div>';
+}
+function render(){
+  const area=document.getElementById('cardArea');
+  if(tab==='hotkeys'){renderHotkeys(area);return}
+  let list=tab==='history'?clips:clips.filter(c=>(c.categories||[]).includes(tab));
+  list=filteredClips(list);
+  renderHistory(area,list);
+}
+function copyIdx(i){navigator.clipboard.writeText(clips[i].content).then(()=>toast('Copied')).catch(()=>toast('Fail'))}
+function togglePinClip(i){clips[i].pinned=!clips[i].pinned;cSave(clips[i]);render();toast(clips[i].pinned?'Pinned at top':'Unpinned')}
+function delClip(i){if(!confirm('Delete?'))return;const id=clips[i].id;clips.splice(i,1);cDel(id);render();toast('Deleted')}
+function clearSlot(i){clips[i].slot=null;cSave(clips[i]);render();toast('Slot cleared')}
+function moveSelUp(){if(sel<=0)return;[clips[sel-1],clips[sel]]=[clips[sel],clips[sel-1]];sel--;render()}
+function moveSelDown(){if(sel<0||sel>=clips.length-1)return;[clips[sel],clips[sel+1]]=[clips[sel+1],clips[sel]];sel++;render()}
+function navPage(d){pg+=d;render()}
+function setTab(t){tab=t;pg=0;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));render()}
+function addCategory(){const name=prompt('Category name:');if(!name||!name.trim())return;const id=name.trim().toLowerCase().replace(/\s+/g,'_');if(categories.find(c=>c.id===id)){toast('Exists');return}categories.push({id,name:name.trim()});saveCategories();renderTabs();setTab(id);toast('Added: '+name.trim())}
+function renderTabs(){const el=document.getElementById('customTabs');el.innerHTML=categories.map(c=>`<button class="tab ${tab===c.id?'active':''}" data-tab="${c.id}" onclick="setTab('${c.id}')" oncontextmenu="event.preventDefault();removeCategory('${c.id}')">${esc(c.name)}</button>`).join('')}
+function removeCategory(id){if(!confirm('Remove this category?'))return;categories=categories.filter(c=>c.id!==id);saveCategories();if(tab===id)tab='hotkeys';renderTabs();render();toast('Removed')}
+function addToCategory(idx){if(!categories.length){toast('No categories');return}const names=categories.map(c=>c.name).join(', ');const pick=prompt('Category ('+names+'):');if(!pick)return;const cat=categories.find(c=>c.name.toLowerCase()===pick.trim().toLowerCase()||c.id===pick.trim().toLowerCase());if(!cat){toast('Not found');return}if(!clips[idx].categories)clips[idx].categories=[];if(!clips[idx].categories.includes(cat.id))clips[idx].categories.push(cat.id);cSave(clips[idx]);render();toast('Added to '+cat.name)}
+function openAdd(slot=''){document.getElementById('modalTitle').textContent='NEW CLIP';document.getElementById('editId').value='';document.getElementById('fContent').value='';document.getElementById('fTags').value='';document.getElementById('fSlot').value=slot;document.getElementById('modalBg').classList.add('open');setTimeout(()=>document.getElementById('fContent').focus(),80)}
+function openAddWithSlot(slot){openAdd(slot)}
+function openEdit(i){const c=clips[i];document.getElementById('modalTitle').textContent='EDIT';document.getElementById('editId').value=i;document.getElementById('fContent').value=c.content;document.getElementById('fTags').value=(c.tags||[]).join(', ');document.getElementById('fSlot').value=c.slot||'';document.getElementById('modalBg').classList.add('open')}
+function closeModal(){document.getElementById('modalBg').classList.remove('open')}
+function saveClip(){const ei=document.getElementById('editId').value;const ct=document.getElementById('fContent').value.trim();if(!ct){toast('Empty');return}const tg=document.getElementById('fTags').value.split(',').map(t=>t.trim()).filter(Boolean);let sl=parseInt(document.getElementById('fSlot').value);if(isNaN(sl)||sl<1||sl>20)sl=null;if(sl)clips.forEach(c=>{if(c.slot===sl)c.slot=null});if(ei!==''){const i=parseInt(ei);clips[i].content=ct;clips[i].tags=tg;clips[i].slot=sl;cSave(clips[i])}else{const nc={id:gid(),content:ct,tags:tg,slot:sl,pinned:false,ts:new Date().toISOString()};clips.unshift(nc);cCreate(nc)}closeModal();render();toast(ei!==''?'Updated':'Added')}
+function exportData(){const b=new Blob([JSON.stringify(clips,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='pof2828_'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('Exported')}
+function handleImport(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!Array.isArray(d))throw 0;const ids=new Set(clips.map(c=>c.id));let n=0;d.forEach(x=>{if(!x.id)x.id=gid();if(!ids.has(x.id)){x.ts=x.ts||new Date().toISOString();clips.push(x);cCreate(x);n++}});render();toast(n+' imported')}catch{toast('Bad file')}};r.readAsText(f);e.target.value=''}
+document.addEventListener('keydown',e=>{const m=document.getElementById('modalBg').classList.contains('open');const inp=['INPUT','TEXTAREA'].includes(document.activeElement.tagName);if(e.key==='Escape'){if(m)closeModal();return}if(m||inp)return;if(e.key==='ArrowLeft'){e.preventDefault();navPage(-1)}if(e.key==='ArrowRight'){e.preventDefault();navPage(1)}if(e.ctrlKey&&e.key==='f'){e.preventDefault();document.getElementById('searchInput').focus()}if(e.ctrlKey&&e.shiftKey&&e.key==='N'){e.preventDefault();openAdd()}});
+document.getElementById('searchInput').addEventListener('input',e=>{search=e.target.value;pg=0;render()});
+function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1200)}
+async function init(){restoreWindowPos();await load();renderTabs();render()}
+init();
+let lsig=sig();setInterval(async()=>{const o=lsig;await load();const n=sig();if(n!==o){render();toast('SYNCED');lsig=n}},2000);
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+Total output lines: 795
+
+=== MASTER FILE LOOKUP TEST ===
+  [\Box\chi + m^2\chi + \frac{\lambda}{6}\chi^3 + \xi R\chi = J_{grace} +] => an equation
+  [\chi[\Omega] = \int\prod_{i=1}^{10} X_i \, d\mu] => an integral equation
+  [G_{eff} = \frac{G}{1 + 8\pi G\xi\chi^2}] => an equation
+  [H = -\sum p_i \log p_i] => a summation equation
+  [F = Gm_1m_2/r^2] => an equation
+  [E = mc^2] => When we read this, it is telling us that E=mc^2 in a more natural way.
+  [dS/dt \geq 0] => a complex mathematical equation
+  [dC/dt = G(C) - S(C) + \Phi(C) \cdot \varepsilon] => an equation
+  [\nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_0}] => an equation
+
+=== MATH BLOCK COUNTS ===
+Display math ($$...$$): 0
+Inline math ($...$): 0
+
+=== FIRST 10 DISPLAY MATH BLOCKS ===
