@@ -9,11 +9,11 @@
 ; Utilities: quick toggles (Always On Top, Remember Position) and mini scripts
 #include utilities_tab.ahk
 
+; Smooth wheel scrolling for ListViews/tables and other child controls
+#include smooth_scroll.ahk
+
 ; Auto-Clicker: multi-slot coordinate clicker with sequential mode
 #include autoclicker.ahk
-
-; Quick Prompt Invoker: "/" slash commands for fast prompt paste
-#include quick_prompt.ahk
 
 ; Hotkey Menu: Ctrl+Shift+Z prompt menu (select text → AI process)
 #include hotkey_menu.ahk

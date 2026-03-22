@@ -37,18 +37,30 @@ TTS_ForceWindowBehavior() {
     }
 }
 
-; --- SUBPROCESS 1: ClipSync Bridge server (Python, silent) ---
-try Run(A_ScriptDir "\clipsync-bridge\start_bridge_silent.bat", , "Hide")
+; --- SUBPROCESS 1: ClipSync Bridge server (Python, direct launch, no .bat) ---
+; Launch pythonw directly to avoid CMD flash from .bat wrapper
+try {
+    pyW := "C:\Users\lowes\AppData\Local\Programs\Python\Python312\pythonw.exe"
+    pyC := "C:\Users\lowes\AppData\Local\Programs\Python\Python312\python.exe"
+    bridgeScript := A_ScriptDir "\clipsync-bridge\sync_server.py"
+    if FileExist(pyW)
+        Run('"' pyW '" "' bridgeScript '"', , "Hide")
+    else if FileExist(pyC)
+        Run('"' pyC '" "' bridgeScript '"', , "Hide")
+}
 
 ; --- SUBPROCESS 2: ClipSync hotkeys/UI bridge (AHK) ---
-try Run(A_ScriptDir "\clipsync-bridge\clipsync_bridge.ahk")
+; Disabled here because the bridge is already loaded through modules\manifest.ahk.
+; Running it again creates duplicate timers/hotkeys and extra tray noise.
+; try Run(A_ScriptDir "\clipsync-bridge\clipsync_bridge.ahk")
 
 ; --- SUBPROCESS 3: BetterTTS (AHK, own tray icon) ---
 ; DISABLED - TTS now embedded in hub TTS tab
 ; try Run(A_ScriptDir "\BetterTTS\BetterTTS.ahk")
 
 ; --- SUBPROCESS 4: Clipboard Manager ---
-try Run(A_ScriptDir "\clipboard\Clipboard.ahk")
+; DISABLED — Clipboard.ahk does not exist in clipboard\ folder
+; try Run(A_ScriptDir "\clipboard\Clipboard.ahk")
 
 ; --- HTML PANELS: Launch after server has time to start ---
 SetTimer(LaunchStartupPanels, -3000)

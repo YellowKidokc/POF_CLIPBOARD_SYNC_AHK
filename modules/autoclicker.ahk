@@ -123,7 +123,7 @@ Build_AutoClickerTab() {
 
     gShell.gui.AddText("x500 ym+45 c" DARK_TEXT, "Slot Overview")
     gShell.gui.SetFont("s9", "Segoe UI")
-    acControls.slotLV := gShell.gui.Add("ListView", "x500 y+8 w450 h300 -Multi +Grid",
+    acControls.slotLV := gShell.gui.Add("ListView", "x500 y+8 w450 h300 -Multi +Grid VScroll",
         ["#", "Enabled", "X", "Y", "Mode", "Interval", "Loops"])
     ApplyDarkListView(acControls.slotLV)
     acControls.slotLV.OnEvent("Click", AC_LV_Click)

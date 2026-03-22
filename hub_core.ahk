@@ -186,7 +186,7 @@ CreateMainGUI() {
 
     ; Build tabs dynamically — NO bold on tab headers (7 tabs overflow with bold)
     gShell.gui.SetFont("s10 cWhite", "Segoe UI")
-    gShell.tabs := gShell.gui.Add("Tab3", "xm ym w1120 h660", tabNames)
+    gShell.tabs := gShell.gui.Add("Tab3", "xm ym w1120 h760", tabNames)
     ApplyDarkTheme(gShell.tabs)
     ; Switch to bold for tab CONTENT
     gShell.gui.SetFont("s10 Bold c" DARK_TEXT, "Segoe UI")
@@ -203,13 +203,12 @@ CreateMainGUI() {
     gShell.tabs.UseTab(0)
     ; Force dark backgrounds on controls that resist DarkMode_Explorer
     ApplyDarkToAllControls(gShell.gui)
-
     ; Events
     gShell.gui.OnEvent("Close", (*) => HideGui())
     gShell.gui.OnEvent("Size", OnGuiResize)
 
     ; Show
-    gShell.gui.Show("w1140 h720")
+    gShell.gui.Show("w1140 h840")
 
     ; Load settings after GUI is visible
     LoadSettings()
@@ -337,8 +336,11 @@ SaveGuiPos() {
     global gShell, gSavedX, gSavedY
     if WinExist("ahk_id " gShell.gui.Hwnd) {
         WinGetPos(&x, &y, , , "ahk_id " gShell.gui.Hwnd)
-        gSavedX := x
-        gSavedY := y
+        ; Skip minimized coordinates (-32000) — Windows parks minimized windows there
+        if (x > -10000 && y > -10000) {
+            gSavedX := x
+            gSavedY := y
+        }
     }
 }
 
@@ -352,7 +354,7 @@ SaveGuiPosIfRemember() {
 
 ShowGui() {
     global gShell, gRememberPos, gSavedX, gSavedY
-    if gRememberPos && gSavedX != "" && gSavedY != ""
+    if gRememberPos && gSavedX != "" && gSavedY != "" && gSavedX > -10000 && gSavedY > -10000
         gShell.gui.Show("x" gSavedX " y" gSavedY)
     else
         gShell.gui.Show()
@@ -591,7 +593,7 @@ BuildShortcutsTab() {
 
     ; --- RIGHT COLUMN: Library ListView ---
     gShell.gui.Add("Text", "x440 ym+45 c" DARK_TEXT, "Library")
-    gShell.libraryLV := gShell.gui.Add("ListView", "x440 y+8 w600 h400 -Multi +Grid",
+    gShell.libraryLV := gShell.gui.Add("ListView", "x440 y+8 w600 h400 -Multi +Grid VScroll",
         ["Type", "Trigger", "Description", "Output Preview"])
     gShell.libraryLV.OnEvent("Click", LV_OnClick)
     gShell.libraryLV.OnEvent("DoubleClick", LV_OnDoubleClick)
@@ -807,7 +809,7 @@ UI_Status(msg) {
 BuildPromptsTab() {
     global gShell, gPrompts
 
-    gShell.gui.Add("Text", "xm+15 ym+45 c" DARK_TEXT, "Create/Edit Prompts for Ctrl+Alt+Z Menu and /slash commands")
+    gShell.gui.Add("Text", "xm+15 ym+45 c" DARK_TEXT, "Create/Edit prompts for /slash commands")
     gShell.gui.SetFont("s9 Bold", "Segoe UI")
 
     gShell.gui.Add("Text", "xm+15 y+25 c" DARK_TEXT, "Command:")
@@ -820,7 +822,7 @@ BuildPromptsTab() {
 
     gShell.gui.Add("Text", "xm+15 y+25 c" DARK_TEXT, "Prompt Template:")
     gShell.gui.Add("Text", "xm+15 y+5 c888888", "Use {text} where selected text goes, or leave empty to append at end")
-    gShell.promptTemplateEdit := gShell.gui.Add("Edit", "xm+15 y+8 w460 r6", "")
+    gShell.promptTemplateEdit := gShell.gui.Add("Edit", "xm+15 y+8 w440 r14 VScroll", "")
     ApplyDarkTheme(gShell.promptTemplateEdit)
     ApplyInputTheme(gShell.promptTemplateEdit)
 
@@ -844,19 +846,19 @@ BuildPromptsTab() {
     gShell.btnSendToChat.OnEvent("Click", (*) => SendPromptToChat())
     ApplyDarkTheme(gShell.btnSendToChat)
 
-    gShell.btnMoveUp := gShell.gui.Add("Button", "x+20 w80", "Move Up")
+    gShell.btnMoveUp := gShell.gui.Add("Button", "xm+15 y+10 w120", "Move Up")
     gShell.btnMoveUp.OnEvent("Click", (*) => MovePrompt(-1))
     ApplyDarkTheme(gShell.btnMoveUp)
 
-    gShell.btnMoveDown := gShell.gui.Add("Button", "x+5 w80", "Move Down")
+    gShell.btnMoveDown := gShell.gui.Add("Button", "x+10 w120", "Move Down")
     gShell.btnMoveDown.OnEvent("Click", (*) => MovePrompt(1))
     ApplyDarkTheme(gShell.btnMoveDown)
 
-    gShell.promptStatusTxt := gShell.gui.Add("Text", "xm+15 y+20 w400 c888888", "")
+    gShell.promptStatusTxt := gShell.gui.Add("Text", "xm+15 y+18 w440 c888888", "")
 
     ; --- RIGHT COLUMN: Prompt Library (scrollable) ---
-    gShell.gui.Add("Text", "x500 ym+45 c" DARK_TEXT, "Your Prompts")
-    gShell.promptsLV := gShell.gui.Add("ListView", "x500 y+8 w560 h530 -Multi +Grid VScroll",
+    gShell.gui.Add("Text", "x520 ym+45 c" DARK_TEXT, "Your Prompts")
+    gShell.promptsLV := gShell.gui.Add("ListView", "x520 y+8 w540 h630 -Multi +Grid VScroll",
         ["Command", "Preview"])
     gShell.promptsLV.OnEvent("Click", PromptLV_OnClick)
     gShell.promptsLV.OnEvent("DoubleClick", PromptLV_OnDoubleClick)
@@ -884,6 +886,9 @@ SavePrompt(*) {
     global gShell, gPrompts, gEditingPromptIndex
     name := Trim(gShell.promptNameEdit.Value)
     template := gShell.promptTemplateEdit.Value
+    name := RegExReplace(name, "^/+", "")
+    if name != ""
+        name := "/" name
     shortcut := RegExReplace(StrLower(name), "[^a-z0-9]", "")  ; Auto-derive slash trigger from name
     shortcut := RegExReplace(shortcut, "[^a-z0-9]", "")  ; Only allow letters and numbers
     if name = "" {
@@ -967,11 +972,11 @@ RefreshPromptsLV() {
     gShell.promptsLV.Delete()
     for i, p in gPrompts {
         preview := StrReplace(SubStr(p.template, 1, 80), "`n", " ")
-        cmdName := p.HasProp("shortcut") && p.shortcut != "" ? p.shortcut : p.name
+        cmdName := p.HasProp("shortcut") && p.shortcut != "" ? "/" p.shortcut : p.name
         gShell.promptsLV.Add("", cmdName, preview)
     }
     gShell.promptsLV.ModifyCol(1, 120)
-    gShell.promptsLV.ModifyCol(2, 350)
+    gShell.promptsLV.ModifyCol(2, 390)
 }
 
 PromptLV_OnClick(lv, row) {
@@ -1094,9 +1099,9 @@ RegisterPromptShortcuts() {
         if !p.HasProp("shortcut") || p.shortcut = ""
             continue
         
-        ; Create hotstring like ":*C:/fix " that triggers prompt
-        shortcut := "/" p.shortcut " "
-        sig := ":*C:" shortcut
+        ; Register immediate slash commands like /probe without requiring a trailing space.
+        shortcut := "/" p.shortcut
+        sig := ":*?:" shortcut
         
         ; Store the index and use a handler that looks it up
         try {
@@ -1116,7 +1121,7 @@ RunPromptShortcut(index, *) {
     p := gPrompts[index]
 
     ; Clear the typed shortcut by backspacing
-    shortcutLen := StrLen("/" p.shortcut " ")
+    shortcutLen := StrLen("/" p.shortcut)
     Send("{Backspace " shortcutLen "}")
     Sleep(50)
 
@@ -1530,7 +1535,7 @@ BuildDataTab() {
     ApplyInputTheme(gShell.dataSearchEdit)
     gShell.gui.Add("Text", "x+5 c888888", "Search")
 
-    gShell.dataLV := gShell.gui.Add("ListView", "x420 y+10 w540 h350 -Multi +Grid",
+    gShell.dataLV := gShell.gui.Add("ListView", "x420 y+10 w540 h350 -Multi +Grid VScroll",
         ["Category", "Name", "Value", "Tags"])
     gShell.dataLV.OnEvent("DoubleClick", CopyDataValue)
     ApplyDarkListView(gShell.dataLV)
@@ -2240,25 +2245,10 @@ OnGuiResize(thisGui, minMax, width, height) {
     gShell.chatInput.Focus()
 }
 
-; Ctrl+Alt+Z = Quick Action Popup (floating dark GUI near mouse)
+; Ctrl+Alt+Z now routes to the dedicated Hotkey Menu module.
 ^!z:: {
-    global gShell, gPrompts, gSelectedText
-
-    oldClip := A_Clipboard
-    A_Clipboard := ""
-    Send("^c")
-
-    if !ClipWait(1) {
-        A_Clipboard := oldClip
-        ToolTip("Select some text first!")
-        SetTimer(() => ToolTip(), -1500)
-        return
-    }
-
-    gSelectedText := A_Clipboard
-    A_Clipboard := oldClip
-
-    ShowQuickActionPopup()
+    if IsSet(HKMenu_ShowMenu)
+        HKMenu_ShowMenu()
 }
 
 ShowQuickActionPopup() {

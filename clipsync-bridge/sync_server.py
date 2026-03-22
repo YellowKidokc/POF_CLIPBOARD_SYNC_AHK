@@ -50,6 +50,8 @@ PORT = 3456
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 HTML_DIR = os.path.dirname(os.path.abspath(__file__))
 PERSONAL_DASHBOARD_DIR = r"C:\Users\lowes\Desktop\Personal dashboard"
+LEGACY_PROMPTS_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config", "prompts.json")
+LEGACY_RESEARCH_LINKS_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config", "research_links.json")
 
 # File Vault folders
 from pathlib import Path as _Path
@@ -340,6 +342,10 @@ class DataStore:
         self.clips = self._load("clips.json", [])
         self.window_state = self._load("window_state.json", {})
         self._lock = threading.Lock()
+        self._import_legacy_slash_prompts()
+        self._import_legacy_research_links()
+        self.sync_legacy_slash_prompts()
+        self.sync_legacy_research_links()
 
     def _load(self, filename, default):
         path = os.path.join(self.data_dir, filename)
@@ -360,9 +366,157 @@ class DataStore:
         with self._lock:
             self._save("prompts.json", self.prompts)
 
+    def _load_legacy_slash_prompts(self):
+        if not os.path.exists(LEGACY_PROMPTS_FILE):
+            return []
+        try:
+            with open(LEGACY_PROMPTS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, IOError):
+            return []
+
+        results = []
+        for item in data if isinstance(data, list) else []:
+            name = (item.get("name") or "").strip()
+            template = item.get("template", "")
+            if not name or not template:
+                continue
+            if not name.startswith("/"):
+                name = "/" + name.lstrip("/")
+            results.append({
+                "id": f"legacy_{item.get('shortcut') or name.lower().strip('/').replace(' ', '_')}",
+                "name": name,
+                "category": "General",
+                "content": template,
+                "hotkey": None,
+                "tags": item.get("tags", []),
+                "description": template[:80],
+                "meta": {"slash": True, "source": "legacy-ahk"},
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            })
+        return results
+
+    def _is_slash_prompt(self, prompt):
+        name = (prompt.get("name") or "").strip()
+        meta = prompt.get("meta") or {}
+        return name.startswith("/") or bool(meta.get("slash"))
+
+    def _import_legacy_slash_prompts(self):
+        legacy_prompts = self._load_legacy_slash_prompts()
+        if not legacy_prompts:
+            return
+
+        existing = {
+            (p.get("name", "").strip().lower(), (p.get("content") or "").strip())
+            for p in self.prompts
+        }
+        changed = False
+        for prompt in legacy_prompts:
+            key = (prompt["name"].strip().lower(), prompt["content"].strip())
+            if key in existing:
+                continue
+            self.prompts.append(prompt)
+            existing.add(key)
+            changed = True
+        if changed:
+            self.save_prompts()
+
+    def sync_legacy_slash_prompts(self):
+        slash_prompts = []
+        for prompt in self.prompts:
+            if not self._is_slash_prompt(prompt):
+                continue
+            name = (prompt.get("name") or "").strip()
+            shortcut = name.lstrip("/").lower()
+            if not shortcut:
+                continue
+            slash_prompts.append({
+                "name": "/" + shortcut,
+                "template": prompt.get("content", ""),
+                "shortcut": shortcut,
+                "replace": True,
+                "popup": False,
+            })
+        try:
+            os.makedirs(os.path.dirname(LEGACY_PROMPTS_FILE), exist_ok=True)
+            with open(LEGACY_PROMPTS_FILE, "w", encoding="utf-8") as f:
+                json.dump(slash_prompts, f, indent=2, ensure_ascii=False)
+        except IOError:
+            pass
+
     def save_bookmarks(self):
         with self._lock:
             self._save("bookmarks.json", self.bookmarks)
+
+    def _load_legacy_research_links(self):
+        if not os.path.exists(LEGACY_RESEARCH_LINKS_FILE):
+            return []
+        try:
+            with open(LEGACY_RESEARCH_LINKS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, IOError):
+            return []
+
+        results = []
+        for item in data if isinstance(data, list) else []:
+            title = (item.get("name") or "").strip()
+            url = (item.get("url") or "").strip()
+            if not title or not url:
+                continue
+            tags = item.get("tags", "")
+            if isinstance(tags, str):
+                tags = [t.strip() for t in tags.split(",") if t.strip()]
+            elif not isinstance(tags, list):
+                tags = []
+            results.append({
+                "id": f"legacy_{uuid.uuid5(uuid.NAMESPACE_URL, url).hex[:8]}",
+                "title": title,
+                "url": url,
+                "category": item.get("category", "General"),
+                "tags": tags,
+                "created_at": item.get("added") or datetime.now(timezone.utc).isoformat(),
+            })
+        return results
+
+    def _import_legacy_research_links(self):
+        legacy_links = self._load_legacy_research_links()
+        if not legacy_links:
+            return
+        existing_urls = {(b.get("url") or "").strip().lower() for b in self.bookmarks}
+        changed = False
+        for bookmark in legacy_links:
+            key = (bookmark.get("url") or "").strip().lower()
+            if not key or key in existing_urls:
+                continue
+            self.bookmarks.append(bookmark)
+            existing_urls.add(key)
+            changed = True
+        if changed:
+            self.save_bookmarks()
+
+    def sync_legacy_research_links(self):
+        legacy_links = []
+        for bookmark in self.bookmarks:
+            tags = bookmark.get("tags", [])
+            if isinstance(tags, list):
+                tags_str = ", ".join(str(t) for t in tags if str(t).strip())
+            else:
+                tags_str = str(tags or "")
+            legacy_links.append({
+                "category": bookmark.get("category", "General"),
+                "name": bookmark.get("title", "Untitled"),
+                "url": bookmark.get("url", ""),
+                "notes": bookmark.get("description", ""),
+                "tags": tags_str,
+                "added": bookmark.get("created_at", ""),
+            })
+        try:
+            os.makedirs(os.path.dirname(LEGACY_RESEARCH_LINKS_FILE), exist_ok=True)
+            with open(LEGACY_RESEARCH_LINKS_FILE, "w", encoding="utf-8") as f:
+                json.dump(legacy_links, f, indent=2, ensure_ascii=False)
+        except IOError:
+            pass
 
     def save_clips(self):
         with self._lock:
@@ -397,6 +551,7 @@ class DataStore:
         }
         self.prompts.append(prompt)
         self.save_prompts()
+        self.sync_legacy_slash_prompts()
         return prompt
 
     def update_prompt(self, prompt_id, data):
@@ -407,6 +562,7 @@ class DataStore:
                         self.prompts[i][key] = data[key]
                 self.prompts[i]["updated_at"] = datetime.now(timezone.utc).isoformat()
                 self.save_prompts()
+                self.sync_legacy_slash_prompts()
                 return self.prompts[i]
         return None
 
@@ -415,6 +571,7 @@ class DataStore:
         self.prompts = [p for p in self.prompts if p["id"] != prompt_id]
         if len(self.prompts) < before:
             self.save_prompts()
+            self.sync_legacy_slash_prompts()
             return True
         return False
 
@@ -436,6 +593,7 @@ class DataStore:
         }
         self.bookmarks.append(bookmark)
         self.save_bookmarks()
+        self.sync_legacy_research_links()
         return bookmark
 
     def update_bookmark(self, bm_id, data):
@@ -445,6 +603,7 @@ class DataStore:
                     if key in data:
                         self.bookmarks[i][key] = data[key]
                 self.save_bookmarks()
+                self.sync_legacy_research_links()
                 return self.bookmarks[i]
         return None
 
@@ -453,6 +612,7 @@ class DataStore:
         self.bookmarks = [b for b in self.bookmarks if b["id"] != bm_id]
         if len(self.bookmarks) < before:
             self.save_bookmarks()
+            self.sync_legacy_research_links()
             return True
         return False
 
@@ -549,8 +709,12 @@ class ClipboardMonitor:
 
         # Try to prepare Windows clipboard access
         try:
-            self._get_clipboard = self._powershell_get_clipboard
-            print("[clipboard] Windows clipboard monitor ready (PowerShell mode)")
+            # Prefer ctypes (zero subprocess overhead) over PowerShell
+            import ctypes
+            ctypes.windll.user32.OpenClipboard(0)
+            ctypes.windll.user32.CloseClipboard()
+            self._get_clipboard = self._win32_get_clipboard
+            print("[clipboard] Windows clipboard monitor ready (ctypes mode)")
         except Exception:
             try:
                 import subprocess
@@ -654,50 +818,19 @@ class BridgeHandler(SimpleHTTPRequestHandler):
         params = parse_qs(parsed.query)
 
         # --- HTML pages ---
+        # Lookup order: PERSONAL_DASHBOARD_DIR (if exists) → modules/ → clipsync-bridge/
+        MODULES_DIR = os.path.join(os.path.dirname(HTML_DIR), "modules")
+
         if path == "/" or path == "/prompts":
-            prompt_path = os.path.join(PERSONAL_DASHBOARD_DIR, "prompt_picker.html")
-            if os.path.exists(prompt_path):
-                return self._serve_file_abs(prompt_path)
-            return self._serve_file("prompt_picker.html")
+            return self._serve_html("prompt_picker.html", MODULES_DIR)
         if path == "/links" or path == "/bookmarks":
-            links_path = os.path.join(PERSONAL_DASHBOARD_DIR, "research_links.html")
-            if os.path.exists(links_path):
-                return self._serve_file_abs(links_path)
-            return self._serve_file("research_links.html")
-        if path == "/clipboard":
-            cb3 = os.path.join(PERSONAL_DASHBOARD_DIR, "clipboard3.html")
-            if os.path.exists(cb3):
-                return self._serve_file_abs(cb3)
-            cb2 = os.path.join(PERSONAL_DASHBOARD_DIR, "clipboard2.html")
-            if os.path.exists(cb2):
-                return self._serve_file_abs(cb2)
-            skinny = os.path.join(os.path.dirname(HTML_DIR), "modules", "clipsync-skinny.html")
-            if os.path.exists(skinny):
-                return self._serve_file_abs(skinny)
-            return self._serve_file("clipboard.html")
-        if path == "/clipboard2":
-            cb2 = os.path.join(PERSONAL_DASHBOARD_DIR, "clipboard2.html")
-            if os.path.exists(cb2):
-                return self._serve_file_abs(cb2)
-            return self.send_error(404, "clipboard2.html not found")
-        if path == "/clipboard3":
-            cb3 = os.path.join(PERSONAL_DASHBOARD_DIR, "clipboard3.html")
-            if os.path.exists(cb3):
-                return self._serve_file_abs(cb3)
-            return self.send_error(404, "clipboard3.html not found")
+            return self._serve_html("research_links.html", MODULES_DIR)
+        if path in ("/clipboard", "/clipboard2", "/clipboard3"):
+            return self._serve_html("clipboard3.html", MODULES_DIR)
         if path == "/calendar" or path == "/tasks":
-            cal = os.path.join(PERSONAL_DASHBOARD_DIR, "task-calendar.html")
-            if os.path.exists(cal):
-                return self._serve_file_abs(cal)
-            cal2 = os.path.join(os.path.dirname(HTML_DIR), "modules", "task-calendar.html")
-            if os.path.exists(cal2):
-                return self._serve_file_abs(cal2)
-            return self.send_error(404, "Task calendar not found")
+            return self._serve_html("task-calendar.html", MODULES_DIR)
         if path == "/dashboard" or path == "/nexus":
-            dash = os.path.join(os.path.dirname(HTML_DIR), "modules", "nexus-dashboard.html")
-            if os.path.exists(dash):
-                return self._serve_file_abs(dash)
-            return self.send_error(404, "Dashboard not found")
+            return self._serve_html("nexus-dashboard.html", MODULES_DIR)
 
         # --- API ---
         if path == "/api/prompts":
@@ -927,6 +1060,14 @@ class BridgeHandler(SimpleHTTPRequestHandler):
         self._add_cors_headers()
         self.end_headers()
         self.wfile.write(body)
+
+    def _serve_html(self, filename, modules_dir):
+        """Serve an HTML file, checking: PERSONAL_DASHBOARD_DIR → modules/ → clipsync-bridge/"""
+        for folder in [PERSONAL_DASHBOARD_DIR, modules_dir, HTML_DIR]:
+            candidate = os.path.join(folder, filename)
+            if os.path.exists(candidate):
+                return self._serve_file_abs(candidate)
+        return self.send_error(404, f"{filename} not found")
 
     def _serve_file(self, filename):
         filepath = os.path.join(HTML_DIR, filename)

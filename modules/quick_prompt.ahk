@@ -1,9 +1,9 @@
 ; ============================================================
 ; MODULE: Quick Prompt Invoker (Slash Commands Only)
-; Type "/" + shortcut + space to paste saved prompts
+; Type "/" + shortcut to paste saved prompts
 ;
 ; Hotkeys:
-;   /prompt_name + space = Paste prompt text at cursor
+;   /prompt_name = Paste prompt text at cursor
 ;
 ; Ctrl+Shift+Z menu is now in hotkey_menu.ahk
 ; ============================================================
@@ -17,7 +17,7 @@ Build_QuickPromptTab() {
     gShell.gui.Add("Text", "xm+15 ym+45", "Slash Commands")
     gShell.gui.SetFont("s9 c" DARK_TEXT, "Segoe UI")
 
-    gShell.gui.Add("Text", "xm+15 y+15 c888888", "Type / + shortcut + space to paste prompt  (e.g., /new + space)")
+    gShell.gui.Add("Text", "xm+15 y+15 c888888", "Type / + shortcut to paste prompt  (e.g., /new)")
 
     gShell.gui.Add("Text", "xm+15 y+20 c" DARK_TEXT, "Available Slash Commands")
     gShell.quickPromptLV := gShell.gui.Add("ListView", "xm+15 y+8 w1020 h350 -Multi +Grid VScroll",

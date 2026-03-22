@@ -28,8 +28,8 @@ Hub_RunBackup() {
         }
     }
 
-    ; Back up Data folder (clipboard.db etc.) — may not exist on fresh installs
-    dataDir := A_ScriptDir "\Data"
+    ; Back up Data folder (clips, prompts, bookmarks JSON) — may not exist on fresh installs
+    dataDir := A_ScriptDir "\clipsync-bridge\data"
     if DirExist(dataDir) {
         Loop Files dataDir "\*.*" {
             try FileCopy(A_LoopFileFullPath, latestDir "\Data\" A_LoopFileName, true)

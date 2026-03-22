@@ -1,7 +1,7 @@
 ; ============================================================
 ; MODULE: Hotkey Prompt Menu
 ; Ctrl+Shift+Z quick-access menu for saved prompts
-; Separated from slash-command system for independent control
+; Central place for non-slash hotkey behavior
 ;
 ; Hotkey:
 ;   Shift+Ctrl+Z  = Open quick prompt menu (select text first)
@@ -13,10 +13,12 @@ Build_HotkeyMenuTab() {
     global gShell, DARK_TEXT
 
     gShell.gui.SetFont("s11 c" DARK_TEXT, "Segoe UI")
-    gShell.gui.Add("Text", "xm+15 ym+45", "Hotkey Prompt Menu")
+    gShell.gui.Add("Text", "xm+15 ym+45", "Hotkey Menu")
     gShell.gui.SetFont("s9 c" DARK_TEXT, "Segoe UI")
 
     gShell.gui.Add("Text", "xm+15 y+15 c888888", "Hotkey: Shift+Ctrl+Z — select text first, then press hotkey to pick a prompt")
+    gShell.gui.Add("Text", "xm+15 y+8 c888888", "Ctrl+Alt+C = Clipboard HTML  |  Ctrl+Alt+P = Prompts HTML  |  Ctrl+Alt+L = Links HTML")
+    gShell.gui.Add("Text", "xm+15 y+8 c888888", "Slash triggers live in the Prompts tab only")
 
     gShell.gui.Add("Text", "xm+15 y+20 c" DARK_TEXT, "Quick Templates")
     for i, tpl in [{n:"Fix Grammar", p:"Fix grammar/spelling. Return ONLY corrected text:"},

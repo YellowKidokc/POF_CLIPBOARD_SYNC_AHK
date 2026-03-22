@@ -146,7 +146,7 @@ body.sb-collapsed .sidebar{width:0;border-right:none;overflow:hidden;}
 .task-check:hover{border-color:var(--green);background:var(--green-dim);}
 .task-check.done{border-color:var(--green);background:var(--green);}
 .task-check.done::after{content:'✓';color:#fff;font-size:10px;font-weight:700;}
-.task.completed .task-title{text-decoration:line-through;color:var(--muted2);}
+.task.completed .task-title{color:var(--text);opacity:1;}
 .task-body{flex:1;min-width:0;}
 .task-title{font-size:13px;line-height:1.4;}
 .task-meta{display:flex;align-items:center;gap:8px;margin-top:3px;}
@@ -411,6 +411,268 @@ const DEFAULT_PROJECTS = [
 const PROJECT_COLORS = ['#E05C6E','#4F8EF7','#4ECB71','#9B7FE8','#F6821F','#F2C94C','#4ac4d4','#e8a912'];
 
 let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+// ── SEED: Claude Code session 2026-03-21 ──
+(function seedOnce(){
+  const SEED_KEY = 'pof2828_seeded_20260321';
+  if(localStorage.getItem(SEED_KEY)) return;
+  const today = '2026-03-21';
+  const seedTasks = [
+    {id:'t_cc_001',title:'[Claude Code] Vault-wide Master Equation variable sweep — ~50+ files fixed (S/F/T mappings)',due:today,done:true,priority:3,project:'proj_research',time:'06:00',notes:'Fixed wrong S=Entropy, F=Faith, T=Time across entire O: vault. Canonical: S=Strong Force/Love, F=Weak Force/Sin, T=Entropy/Judgment. ~50 files corrected, 15 archived to 00_ARCHIVE/WRONG_LAW_ORDERING.'},
+    {id:'t_cc_002',title:'[Claude Code] Psychology paper numbers corrected (02-02, 02-03)',due:today,done:true,priority:2,project:'proj_research',time:'07:00',notes:'886% spending increase (was 300%), 50-100% depression (was 400%), youth 3-4x. Wolfram-verified.'},
+    {id:'t_cc_003',title:'[Claude Code] 17 Evolution papers converted to Word + PDF',due:today,done:true,priority:3,project:'proj_research',time:'08:00',notes:'SP01-SP15 + THE CONFIGURATION LADDER + THE INVERSE SOLVER. Garamond, gold headers, tables. Output: WORD_DOCS/ and FORMAL_PAPERS/EVOLUTION_SERIES/.'},
+    {id:'t_cc_004',title:'[Claude Code] Premium preprint docs built (FT-EVO-01, FT-EVO-02)',due:today,done:true,priority:3,project:'proj_research',time:'09:00',notes:'THE CONFIGURATION LADDER (FT-EVO-01) and THE INVERSE SOLVER (FT-EVO-02). Full FT-series format: title page, abstract, gold rules, blockchain hash, Derived with Claude Opus 4.6.'},
+    {id:'t_cc_005',title:'[Claude Code] Formal Papers Upload folder created on Desktop',due:today,done:true,priority:2,project:'proj_work',time:'10:00',notes:'17 .docx + 17 .pdf + AI Forge code (ai.ts, AIWorkspace.tsx, Kimi dashboard). All in C:/Users/lowes/Desktop/Formal Papers Upload/.'},
+    {id:'t_cc_006',title:'[Claude Code] Task Calendar standing order broadcast to all 8 AI channels',due:today,done:true,priority:3,project:'proj_work',time:'10:30',notes:'Comms hub messages 22-29. All agents: update task calendar every session, 2hr sync, append only.'},
+    {id:'t_cc_007',title:'[Claude Code] mefiles.zip cleaned — variable tables fixed, repacked as mefiles_CLEAN.zip',due:today,done:true,priority:1,project:'proj_research',time:'07:30',notes:'MASTER_EQUATION_FORMAL_LAYER.md and THEOPHYSICS_COMPLETE_FORMAL_TREATMENT.md fixed.'},
+  ];
+  seedTasks.forEach(t=>{ if(!tasks.find(x=>x.id===t.id)) tasks.push(t); });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  localStorage.setItem(SEED_KEY, '1');
+})();
+
+// ── SEED: Claude Opus session 2026-03-21 (evening) ──
+(function seedOpus20260321(){
+  const SEED_KEY = 'pof2828_seeded_opus_20260321';
+  if(localStorage.getItem(SEED_KEY)) return;
+  const today = '2026-03-21';
+  const tomorrow = '2026-03-22';
+  const seedTasks = [
+    // COMPLETED TODAY
+    {id:'t_op_001',title:'[Opus] 15 Shadow Papers written (SP-01 to SP-15) — evolution biology',due:today,done:true,priority:3,project:'proj_research',time:'18:00',notes:'Haldane rate, LTEE mismatch, computational circularity, Kimura DFE, Cambrian Lynch-Abegg, Blount citrate, Heath FBD, Maynard Smith protein space, Eyre-Walker DFE, Green Neanderthal, Gillespie DFE, Miller chemistry, RNA World, 1000 Genomes, Sutherland polymerization. All anonymous, collegial, uses their own math.'},
+    {id:'t_op_002',title:'[Opus] 2 Kill Papers written (Config Ladder + Inverse Solver)',due:today,done:true,priority:3,project:'proj_research',time:'19:00',notes:'KILL-01: 5 configs, all fail, 100K Monte Carlo. KILL-02: 3/7 params impossible (mu 9.8x, s 89-890x, Ne 20-20Kx). Tier 1+2 heavy weapons.'},
+    {id:'t_op_003',title:'[Opus] All 17 papers converted to .docx in vault',due:today,done:true,priority:2,project:'proj_research',time:'19:30',notes:'O:\\_Theophysics_v4\\00_Canonical\\Shadow_Papers\\ — SP01-SP15 + KILL_01 + KILL_02.'},
+    {id:'t_op_004',title:'[Opus] Maxwell Mirror v2 verified — 5/5 PASS',due:today,done:true,priority:3,project:'proj_research',time:'17:00',notes:'M1 mass matrix rank 10. M2 oscillatory frequencies 0.134/0.463. M3 topology match 8/8. M4 pair coupling confirmed. M5 E-K bounded oscillation. Phase 0° not 90° (honest difference).'},
+    {id:'t_op_005',title:'[Opus] 58 Logos Papers copied to vault as LG series',due:today,done:true,priority:2,project:'proj_research',time:'20:00',notes:'O:\\_Theophysics_v4\\00_Canonical\\_LOGOS_PAPERS\\ — 57 papers + master index. LG-01 through LG-57. Full theological case.'},
+    {id:'t_op_006',title:'[Opus] 64 Cross-Domain files consolidated to Arsenal',due:today,done:true,priority:2,project:'proj_research',time:'20:30',notes:'O:\\_Theophysics_v4\\00_Canonical\\Cross_Domain_Arsenal\\ — Psychology, sociology, economics, education, Amish control, CDC papers, apologetics, Fruits Score.'},
+    {id:'t_op_007',title:'[Opus] Coherence Collapse dates verified — 7/7 PASS',due:today,done:true,priority:3,project:'proj_research',time:'21:00',notes:'Structural break analysis: SAT 1963 (exact), Crime 1968 (4yr lag), Trust 1966 (1yr), Divorce 1964 (1yr), Church 1965 (exact), OOW births 1964 (1yr), Single-parent 1965 (exact).'},
+    {id:'t_op_008',title:'[Opus] Wolfram MCP installed and verified',due:today,done:true,priority:2,project:'proj_work',time:'21:30',notes:'D:\\GitHub\\mcp-wolframalpha. API key YEGYLQ8QWX. Added to Claude Desktop config. Live queries returning FBI UCR data.'},
+    {id:'t_op_009',title:'[Opus] Crime data verified via Wolfram — 1964 break confirmed',due:today,done:true,priority:3,project:'proj_research',time:'22:00',notes:'Wolfram FBI UCR: Violent crime 160.9(1960) → 190.6(1964, +13%) → 363.5(1970). Murder, robbery, assault all break at 1964. 5 crime categories confirmed.'},
+    {id:'t_op_010',title:'[Opus] Psychology numbers corrected with primary sources',due:today,done:true,priority:2,project:'proj_research',time:'22:30',notes:'Spending: 886% increase not 300% (SAMHSA $28.4B→$280B). Depression: 50-100% not 400% (general pop). Youth rates 3-4x. Scissors graph stronger with real numbers.'},
+    {id:'t_op_011',title:'[Opus] Series renamed: FT (Formal), LG (Logos), SP (Shadow)',due:today,done:true,priority:2,project:'proj_work',time:'23:00',notes:'DT→FT. Logos Papers→LG-01 to LG-57. Shadow Papers→SP-01 to SP-15 + SP-K1/K2. Indexes updated in vault.'},
+    {id:'t_op_012',title:'[Opus] 16 FT papers staged for Zenodo upload',due:today,done:true,priority:2,project:'proj_work',time:'23:30',notes:'C:\\Users\\lowes\\Desktop\\ZENODO_UPLOAD\\Formal_Papers\\ — FT-001 through FT-016. 5 ready now (2 PDF, 3 docx). 11 need conversion.'},
+    {id:'t_op_013',title:'[Opus] Kimmy dashboard spec written',due:today,done:true,priority:1,project:'proj_work',time:'23:45',notes:'C:\\Users\\lowes\\Desktop\\KIMMY_DASHBOARD_SPEC.md — 6-panel sidebar (clipboard, files, tags, notes, AI agent, settings). Mobile-first. Forge AI code reviewed.'},
+    {id:'t_op_014',title:'[Opus] 7Q Obsidian templates created',due:today,done:true,priority:1,project:'proj_research',time:'17:30',notes:'Forward classification + reverse proof + academic CSS. Light YAML for GitHub, full YAML for vault.'},
+    // PENDING
+    {id:'t_op_020',title:'Upload FT-001, FT-002, FT-007 to Zenodo (docx ready)',due:tomorrow,done:false,priority:3,project:'proj_work',time:'10:00',notes:'Math Before Matter, Truth Measurement, Unforced Consensus. Zenodo accepts docx directly.'},
+    {id:'t_op_021',title:'Update FT-006/FT-008 on Zenodo with FT prefix',due:tomorrow,done:false,priority:2,project:'proj_work',time:'10:30',notes:'Pharisee Function and Hubble Gradient. New version with FT-006/FT-008 naming. DOIs stay valid.'},
+    {id:'t_op_022',title:'Convert 11 FT markdown papers to PDF',due:tomorrow,done:false,priority:2,project:'proj_work',time:'11:00',notes:'FT-003 through FT-016 (minus existing PDFs). Hand to AI for pretty formatting.'},
+    {id:'t_op_023',title:'Build email contact list — 60 institutions for Wave 1',due:tomorrow,done:false,priority:3,project:'proj_research',time:'14:00',notes:'Evolutionary biology department chairs/corresponding authors. Exa or web scrape.'},
+    {id:'t_op_024',title:'Forward derivation: Lagrangian → H₀(z) → JWST comparison',due:tomorrow,done:false,priority:3,project:'proj_research',time:'16:00',notes:'The 7/10 → 9/10 gap. Need specific redshift predictions from χ-field Lagrangian.'},
+    {id:'t_op_025',title:'Ngram virtue-word verification (1960-1962 onset claim)',due:tomorrow,done:false,priority:1,project:'proj_research',time:'',notes:'Google Books Ngram Viewer. Verify duty/honor/integrity/conscience/righteousness decline timing.'},
+    {id:'t_op_026',title:'Formal p-value for synchronized breaks across 11 domains',due:tomorrow,done:false,priority:2,project:'proj_research',time:'',notes:'6 independent datasets breaking in 4-year window. Base rate ~0.2 breaks/decade/domain. Compute exact probability.'},
+  ];
+  seedTasks.forEach(t=>{ if(!tasks.find(x=>x.id===t.id)) tasks.push(t); });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  localStorage.setItem(SEED_KEY, '1');
+})();
+
+// ── SEED: Claude Opus session 2026-03-21 (night) — 7Q Truth Engine build ──
+(function seedOpus7Q20260321(){
+  const SEED_KEY = 'pof2828_seeded_opus7q_20260321';
+  if(localStorage.getItem(SEED_KEY)) return;
+  const today = '2026-03-21';
+  const tomorrow = '2026-03-22';
+  const seedTasks = [
+    // COMPLETED TODAY
+    {id:'t_op7q_001',title:'[Opus] 7Q Framework module built (seven_q_module.py) — 9 dimensions, 55 output columns',due:today,done:true,priority:3,project:'proj_research',time:'23:00',notes:'C:\\Users\\lowes\\Desktop\\Truth Engine\\modules\\seven_q_module.py. 27KB. score_seven_q(), derive_seldpc(), build_evidence_chain(). 9 marker dicts (seed_legitimacy, soil_context, sprout_testability, rain_evidence, root_mechanism, canopy_scope, axe_survivability, reverse_pairs, evidence_protocol). NLP phrase matching same pattern as grace_layer_module.'},
+    {id:'t_op7q_002',title:'[Opus] S/E/L/D/P/C derivation layer added to 7Q module',due:today,done:true,priority:3,project:'proj_research',time:'23:10',notes:'derive_seldpc() maps 7Q raw scores to 6-variable truth formula from workbook. S=Survivability(Q7), E=Evidence(Q4_PS*CF), L=Logic(Q3*Q5), D=Dependencies(Q2), P=Predictions(Q3_testability*Q5), C=Coherence(Q6). T=(S+E+L+D+P+C)/6. Why-Penalty: ED=0 caps E at 50%.'},
+    {id:'t_op7q_003',title:'[Opus] Evidence chain with E1-E5 gate inference built',due:today,done:true,priority:3,project:'proj_research',time:'23:20',notes:'build_evidence_chain() returns per-dimension audit trail: detected phrases, raw score, E1-E5 gate levels inferred from PS/ED/EC, vulnerability flags. Full traceability from score back to text.'},
+    {id:'t_op7q_004',title:'[Opus] Fruit amplifiers wired (Q7→faithfulness, Q4→self_control, Q6→goodness, Q5→patience)',due:today,done:true,priority:2,project:'proj_research',time:'23:25',notes:'0-0.3 boost per fruit dimension. Feeds into christ_vector_module. Truth modulation: T_final = T_v3 * (0.6 + 0.4 * 7Q_score).'},
+    {id:'t_op7q_005',title:'[Opus] Alignment verified against 7Q Full Method.xlsx — all 10 sheets YES',due:today,done:true,priority:3,project:'proj_research',time:'23:30',notes:'20-sheet workbook (10 populated). Evidence Protocol CF formula exact match. S/E/L/D/P/C mapping verified. Enum values machine-readable. Two-layer architecture confirmed: Language layer (Fruits Engine) + Structure layer (7Q Engine).'},
+    {id:'t_op7q_006',title:'[Opus] Calibration corpus tested — correct ranking confirmed',due:today,done:true,priority:2,project:'proj_research',time:'23:35',notes:'Framework axioms > inaugural speeches > propaganda. GR calibration doc scored high. Propaganda sample scored near zero. Why-Penalty working: PS=1.0 data-only doc capped to E_final=0.25.'},
+    {id:'t_op7q_007',title:'[Opus] Standalone + integrated mode confirmed for seven_q_module',due:today,done:true,priority:2,project:'proj_research',time:'23:40',notes:'Self-test at bottom of module runs independently. Also importable by truth_engine.py via existing sys.path pattern. No hardcoded weights — configurable for GitHub.'},
+    // PENDING
+    {id:'t_op7q_020',title:'Wire 7Q output columns to Excel template (when template ready)',due:tomorrow,done:false,priority:3,project:'proj_research',time:'',notes:'55 columns across 7 blocks. Waiting for user to finish 7Q Full Method.xlsx template sheets 11-19. unified_excel_output.py needs update.'},
+    {id:'t_op7q_021',title:'Integrate seven_q_module into truth_engine.py score_text()',due:tomorrow,done:false,priority:3,project:'proj_research',time:'',notes:'Import + call score_seven_q() in score_text(). Add 7Q tab or section to PySide6 GUI. Apply truth modulation formula.'},
+    {id:'t_op7q_022',title:'Build word list sheets reader (sheets 11-19 from workbook)',due:tomorrow,done:false,priority:1,project:'proj_research',time:'',notes:'If word list sheets populated in 7Q Full Method.xlsx, Python modules should read from Excel instead of hardcoding marker dicts.'},
+  ];
+  seedTasks.forEach(t=>{ if(!tasks.find(x=>x.id===t.id)) tasks.push(t); });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  localStorage.setItem(SEED_KEY, '1');
+})();
+
+// ── SEED: Claude Opus session 2026-03-21 — 7Q Framework Full Build (afternoon/evening) ──
+(function seedOpusFullBuild20260321(){
+  const SEED_KEY = 'pof2828_seeded_opus_fullbuild_20260321';
+  if(localStorage.getItem(SEED_KEY)) return;
+  const today = '2026-03-21';
+  const tomorrow = '2026-03-22';
+  const seedTasks = [
+    // ═══ SPECS & DOCUMENTS ═══
+    {id:'t_fb_001',title:'[Opus] 7Q Engine Specification written (787 lines) — complete plugin design',due:today,done:true,priority:3,project:'proj_research',time:'12:00',notes:'All 7 questions with fields, dropdowns, AI prompts, YAML schemas, truth scoring, plugin architecture. Output: 7Q_ENGINE_SPEC.md in Opus Web Building Kit + outputs.'},
+    {id:'t_fb_002',title:'[Opus] Evidence Classification Protocol written — PS x ED x EC three-channel system',due:today,done:true,priority:3,project:'proj_research',time:'12:30',notes:'Three channels (Phenomenon Strength, Explanatory Depth, Experiential Coherence). Five gates (E1-E5). Why-Penalty: ED=0 caps evidence at 50%. CF=(0.5+0.5*ED)*(0.5+0.5*EC). Seven epistemic honesty rules. EVIDENCE_CLASSIFICATION_PROTOCOL.md.'},
+    {id:'t_fb_003',title:'[Opus] 7Q Inference Prompt written — paste-ready for any AI',due:today,done:true,priority:2,project:'proj_research',time:'13:00',notes:'Standalone prompt. Paste into any LLM, append claim, returns: Core Claim, Best Surviving Version, Dependencies, Consequences, Failure Points, Robustness, Knowledge Graph YAML. Deployed to Desktop + Vault Templates + Engine Room.'},
+    {id:'t_fb_004',title:'[Opus] OpenAI blank engine room structure started',due:today,done:true,priority:2,project:'proj_work',time:'13:30',notes:'O:\\_Theophysics_v4\\00_SYSTEM\\01_ENGINE\\02_OPENAI_BLANK\\. LAUNCH.bat, _LAUNCH_TEMPLATE.bat, CALL/prompt.txt, CALL/config.example.txt. MENU.ps1 still needed.'},
+
+    // ═══ HTML PAGES ═══
+    {id:'t_fb_010',title:'[Opus] 7q_tree.html built — scroll-driven introduction, one tree seven lenses',due:today,done:true,priority:3,project:'proj_research',time:'14:00',notes:'IntersectionObserver scroll animation. 8 sections (Q0-Q7). Same tree, different zone highlighted per section. Dark theme matching framework pages.'},
+    {id:'t_fb_011',title:'[Opus] 7q_explained.html built — full forward method with GR example',due:today,done:true,priority:3,project:'proj_research',time:'14:30',notes:'General Relativity threaded through all 8 stages. Each stage: transformation badge, explanation, physics example, reader question. Shows 7Q surfacing hidden features of GR.'},
+    {id:'t_fb_012',title:'[Opus] 7q_evidence.html built — three-channel evidence protocol visualized',due:today,done:true,priority:3,project:'proj_research',time:'15:00',notes:'Rain (PS), Sunlight (ED), Soil Moisture (EC) mapped to tree. Why-penalty explained. Completeness formula with 6-scenario table. Five gates walkthrough. Seven epistemic honesty rules.'},
+    {id:'t_fb_013',title:'[Opus] 7q_reverse.html built — prove by destruction, Q7 to Q1',due:today,done:true,priority:3,project:'proj_research',time:'15:30',notes:'Seven steps: Destroy, Force, Ground, Support, State, Generalize, Name. Each step has mini tree SVG, transformation badge, GR example, reader question. Forward vs reverse comparison table.'},
+    {id:'t_fb_014',title:'[Opus] 7q_framework.html built — unified page tying all sections',due:today,done:true,priority:2,project:'proj_research',time:'14:15',notes:'Navigation bar linking to all five HTML pages. 7Q method overview section. Needs expansion per question.'},
+
+    // ═══ PNGs ═══
+    {id:'t_fb_020',title:'[Opus] 8 icon PNGs generated — one per 7Q stage (512x512)',due:today,done:true,priority:2,project:'proj_research',time:'16:00',notes:'Same tree, different zone highlighted. Q number at top, verb at bottom: ARRIVE, DEFINE, LOCATE, COMMIT, SUPPORT, GROUND, PROPAGATE, DESTROY. Matplotlib dark theme. In C:\\Users\\lowes\\Desktop\\7Q Method\\Pics\\Icons\\.'},
+    {id:'t_fb_021',title:'[Opus] 8 descriptor card PNGs generated (1200x600)',due:today,done:true,priority:2,project:'proj_research',time:'16:15',notes:'Left panel: tree with highlighted zone. Right panel: Q number, verb, title, subtitle, description, transformation. In C:\\Users\\lowes\\Desktop\\7Q Method\\Pics\\Cards\\.'},
+    {id:'t_fb_022',title:'[Opus] Overview strip PNG generated — all 8 stages side by side',due:today,done:true,priority:2,project:'proj_research',time:'16:30',notes:'2400x420. Full progression: ARRIVE thru DESTROY. In C:\\Users\\lowes\\Desktop\\7Q Method\\Pics\\overview_strip.png.'},
+
+    // ═══ FORMAL PAPERS (Vault) ═══
+    {id:'t_fb_030',title:'[Opus] FP-007 vault folder created — The 7Q Framework thesis unit',due:today,done:true,priority:3,project:'proj_research',time:'17:00',notes:'O:\\_Theophysics_v4\\04_THEOPYHISCS\\FORMAL_PAPERS\\FP-007_THE_7Q_FRAMEWORK\\. Full DT unit structure.'},
+    {id:'t_fb_031',title:'[Opus] Biaxiosum (Page Zero) written for 7Q thesis — DT-007',due:today,done:true,priority:3,project:'proj_research',time:'17:15',notes:'00_BIAXIOSUM_DT007.md. Declared bias: "I believe the scientific method is incomplete." Customized Biaxiosum Rule. 24 Properties table. Full Page Zero.'},
+    {id:'t_fb_032',title:'[Opus] Paper I written — Foundational Claim (LOWE FACTS format)',due:today,done:true,priority:3,project:'proj_research',time:'17:30',notes:'01_PAPER_I_the_7q_framework.md. Filled FACTS: Find (fragmentation anomaly), Admit (bias table), Claim (thesis + 3 supports + predictions), Test (7-row GR evidence table), Snap (5 kill conditions, 1 survived). Lowe Battery 2 PASS 1 PENDING.'},
+    {id:'t_fb_033',title:'[Opus] Paper II written — Adversarial Response (strongest objection steelmanned)',due:today,done:true,priority:3,project:'proj_research',time:'18:00',notes:'02_PAPER_II_the_7q_framework.md. Objection: "Its Lakatos with a GUI." Three concessions. Three responses (integration novelty, machine-readability, Q0/Q3 no precedent). Collision table. Verdict: survived with clarifications.'},
+    {id:'t_fb_034',title:'[Opus] Destruction Manual written — how to kill the 7Q argument',due:today,done:true,priority:3,project:'proj_research',time:'18:30',notes:'05_DESTRUCTION_MANUAL_the_7q_framework.md. 10 kill conditions. 3 strongest attacks expanded (Lakatos-GUI, Why-Penalty, Q0-unfalsifiable). 3 terminal conditions. 5 open vulnerabilities. Public invitation to falsify.'},
+
+    // ═══ UNIFIED PIPELINE ═══
+    {id:'t_fb_040',title:'[Opus] Unified Pipeline Spec written — 7 stages, one pass, all scores',due:today,done:true,priority:3,project:'proj_research',time:'19:00',notes:'UNIFIED_PIPELINE_SPEC.md. Maps 7 scoring engines + 3 analytics layers into 6-stage pipeline. Stage 0 Triage, Stage 1 7Q+Evidence+Truth, Stage 2 Fruits, Stage 3 Chi, Stage 4 Coherence, Stage 5 CDCM, Stage 6 Synthesis. Three modes: lightning/fast/full.'},
+    {id:'t_fb_041',title:'[Opus] GUI Architecture Addendum written — modular GUIs + verification layer',due:today,done:true,priority:3,project:'proj_research',time:'19:30',notes:'UNIFIED_PIPELINE_GUI_ADDENDUM.md. 8 engine folders each with own GUI + LAUNCH.bat. Master GUI wireframe. Optimized execution order (local first, API last). Pre-flight cost estimation. Stage 7 Verification (AI double-check). Two analytics layers (standard + ours).'},
+
+    // ═══ HANDOFFS ═══
+    {id:'t_fb_050',title:'[Opus] 7Q Score Module build notes written — handoff for other AI',due:today,done:true,priority:2,project:'proj_work',time:'19:45',notes:'7Q_SCORE_MODULE_BUILD_NOTES.md in C:\\Users\\lowes\\Desktop\\7Q Method\\. Gap analysis, formula, Fruits mapping, integration pattern. Drop-in compatible with truth_coherence_scanner.py.'},
+    {id:'t_fb_051',title:'[Opus] Session log saved to vault',due:today,done:true,priority:2,project:'proj_work',time:'20:00',notes:'O:\\_Theophysics_v4\\David\\Session_Logs\\2026-03-21_7Q_ENGINE_SESSION.md. Five tables: Specs, HTML Pages, PNGs, Key Decisions, Threads Open.'},
+    {id:'t_fb_052',title:'[Opus] Paper 1 docx generated (academic format, later superseded by FACTS format)',due:today,done:true,priority:1,project:'proj_research',time:'16:45',notes:'Paper_1_The_7Q_Framework.docx. Georgia font, 174 paragraphs, 8 sections. Validated. Superseded by FP-007 FACTS format papers in vault.'},
+
+    // ═══ PENDING (tomorrow) ═══
+    {id:'t_fb_060',title:'Paper III (Application) — run 7Q on a non-physics domain',due:tomorrow,done:false,priority:3,project:'proj_research',time:'',notes:'FP-007 DT unit needs Paper III. Apply 7Q to theology, economics, or consciousness to prove domain agnosticism.'},
+    {id:'t_fb_061',title:'Landscape Map — position 7Q vs Popper/Lakatos/Kuhn',due:tomorrow,done:false,priority:2,project:'proj_research',time:'',notes:'04_LANDSCAPE_MAP_the_7q_framework.md. Three thinkers, gap analysis, position map.'},
+    {id:'t_fb_062',title:'GitHub repos setup on DavidLoweOKC',due:tomorrow,done:false,priority:2,project:'proj_work',time:'',notes:'7Q Engine, Fruits Engine, Hubble Gradient, Principia, BAES, Highcharts, Lowe Modified EFE, Convergence Engine.'},
+    {id:'t_fb_063',title:'7Q acronym — seven letters, one word, Q0 outside',due:tomorrow,done:false,priority:1,project:'proj_research',time:'',notes:'Candidate: INQUIRY. Not locked.'},
+    {id:'t_fb_064',title:'Evidence + Reverse method icon/card PNGs — match 7Q style for gates and steps',due:tomorrow,done:false,priority:1,project:'proj_research',time:'',notes:'Style established in icon/card generator. Needs 5-gate set for evidence protocol and 7-step set for reverse method.'},
+    {id:'t_fb_065',title:'Realistic tree image — send prompt to image AI',due:tomorrow,done:false,priority:1,project:'proj_research',time:'',notes:'7Q_TREE_IMAGE_PROMPT.txt on Desktop. Midjourney/DALL-E prompt ready.'},
+    {id:'t_fb_066',title:'Build unified_pipeline.py — Phase 1 pipeline wrapper',due:tomorrow,done:false,priority:3,project:'proj_work',time:'',notes:'Accepts markdown file, calls each stage, collects into Score Card YAML. See UNIFIED_PIPELINE_SPEC.md and GUI_ADDENDUM.md.'},
+  ];
+  seedTasks.forEach(t=>{ if(!tasks.find(x=>x.id===t.id)) tasks.push(t); });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  localStorage.setItem(SEED_KEY, '1');
+})();
+
+// ── SEED: Claude Opus session 2026-03-21 — 7Q Workbook 20-Sheet Build ──
+(function seedOpusWorkbook20260321(){
+  const SEED_KEY = 'pof2828_seeded_opus_workbook_20260321';
+  if(localStorage.getItem(SEED_KEY)) return;
+  const today = '2026-03-21';
+  const tomorrow = '2026-03-22';
+  const seedTasks = [
+    // ═══ NEW SHEETS BUILT ═══
+    {id:'t_wb_001',title:'[Opus] 7Q Reverse Engine sheet built — Q7→Q1 live tool with worked examples',due:today,done:true,priority:3,project:'proj_research',time:'14:00',notes:'208 rows. 7 steps: Destroy→Force→Ground→Support→State→Generalize→Name. Dropdown menus, auto-scoring, verdict column (SURVIVED/Standing wounded/Unstable/DEAD). Worked examples: GR (T=0.950 SURVIVED), Supply & Demand (T=0.650 Standing wounded).'},
+    {id:'t_wb_002',title:'[Opus] 7Q Scores Output Template built — 42-field Python bridge',due:today,done:true,priority:3,project:'proj_research',time:'15:00',notes:'63 rows, 7 blocks. Composite(5), Per-Dimension(9x4=36), Evidence Protocol(PS/ED/EC/CF/E_final), Fruit Amplifiers(4), Truth Modulation(3), Reverse Detection(3), S/E/L/D/P/C Derivation. Python writes raw B-column, Excel formulas derive everything else.'},
+    {id:'t_wb_003',title:'[Opus] 8 Fruits term library sheets imported from Fruits Template.xlsx',due:today,done:true,priority:2,project:'proj_research',time:'16:00',notes:'Fruit(278), Anti-Fruit(298), Grounding(103), Propaganda(72), Contradiction(39), Jargon(56), Weights, Archetypes(12+6), Characterizations(10). Sheets 11-19 of workbook.'},
+
+    // ═══ ARCHITECTURE DECISIONS ═══
+    {id:'t_wb_004',title:'[Opus] Two-layer truth system architecture confirmed and documented',due:today,done:true,priority:3,project:'proj_research',time:'16:30',notes:'Language layer (Fruits Engine — how someone speaks) + Structure layer (7Q Engine — what someone claims). 7Q Scores sheet is the bridge. Python writes raw, Excel derives truth. Full audit trail.'},
+    {id:'t_wb_005',title:'[Opus] S/E/L/D/P/C mapping finalized — Python↔Excel alignment verified',due:today,done:true,priority:3,project:'proj_research',time:'17:00',notes:'S=Q7(falsifiability), E=Q4(e_final), L=avg(Q3+ED), D=Q5(foundation), P=Q6(consequence), C=avg(Q2+Q6). T=(S+E+L+D+P+C)/6. All YES across 10 sheets. Evidence Protocol CF formula exact match.'},
+
+    // ═══ VERIFICATION ═══
+    {id:'t_wb_006',title:'[Opus] Full 20-sheet workbook alignment verified — all cross-checks PASS',due:today,done:true,priority:3,project:'proj_research',time:'18:00',notes:'Truth Score, Evidence Protocol, Evidence Calculator, 7Q Engine, 7Q Reverse, Fruit Amplifiers — all aligned. 20 sheets: 1 output template + 3 live tools + 4 spec refs + 6 term libs + 3 scoring config + 2 system config + 1 placeholder.'},
+
+    // ═══ PENDING ═══
+    {id:'t_wb_020',title:'Build Python standalone scorer script (writes to 7Q Scores template)',due:tomorrow,done:false,priority:3,project:'proj_research',time:'',notes:'Script reads text, calls seven_q_module.py, writes raw values to B-column of 7Q Scores sheet in 7Q Full Method.xlsx via openpyxl.'},
+    {id:'t_wb_021',title:'Populate 7Q Explained sheet (content TBD)',due:tomorrow,done:false,priority:1,project:'proj_research',time:'',notes:'Currently empty placeholder. May pull from 7q_explained.html or stay empty.'},
+    {id:'t_wb_022',title:'Import remaining 4 Fruits sheets (AAVE, Baseline, Dual Comparison, Dashboard)',due:tomorrow,done:false,priority:1,project:'proj_research',time:'',notes:'Lower priority. AAVE-Ebonics, Baseline Scores, Dual Comparison, Fruits Template dashboard.'},
+    {id:'t_wb_023',title:'Cluster Truth patterns — STABLE TRUTH REGION detection',due:tomorrow,done:false,priority:2,project:'proj_research',time:'',notes:'High T + Low variance = STABLE TRUTH REGION. Needs implementation in both Excel conditional formatting and Python module.'},
+    {id:'t_wb_024',title:'Christ Vector full integration with Fruit Amplifiers',due:tomorrow,done:false,priority:2,project:'proj_research',time:'',notes:'Wire amplifier outputs from 7Q Scores sheet into christ_vector_module.py. Currently mapped but not connected end-to-end.'},
+  ];
+  seedTasks.forEach(t=>{ if(!tasks.find(x=>x.id===t.id)) tasks.push(t); });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  localStorage.setItem(SEED_KEY, '1');
+})();
+
+// ── SEED: Claude Code session 2026-03-21 (late night) — Formal Papers MD→DOCX ──
+(function seedCC_FormalPapers20260321(){
+  const SEED_KEY = 'pof2828_seeded_cc_formalpapers_20260321';
+  if(localStorage.getItem(SEED_KEY)) return;
+  const today = '2026-03-21';
+  const seedTasks = [
+    {id:'t_ccfp_001',title:'[Claude Code] 11 FT markdown papers converted to styled .docx',due:today,done:true,priority:3,project:'proj_work',time:'23:50',notes:'FT-003 Math Is Moral, FT-004 Turtles and the Floor, FT-005 Trinity Requirement DRAFT, FT-009 Adversary Thread, FT-010 Nucleation Thesis, FT-011 Terminus Sui, FT-012 Temporality as Operational Domain, FT-013 BAES AI Evaluation System, FT-014 The Same Equation Everywhere, FT-015 The Equation That Wouldnt Break, FT-016 Master Equation Verification. All in C:\\Users\\lowes\\Desktop\\ZENODO_UPLOAD\\Formal_Papers\\.'},
+    {id:'t_ccfp_002',title:'[Claude Code] Style-matched to Pharisee/Hubble reference papers',due:today,done:true,priority:2,project:'proj_work',time:'23:51',notes:'Georgia 20pt bold title, Georgia 16pt italic subtitle, Georgia 11pt italic author, Heading 1 Georgia 16pt bold, Heading 2 Arial 13pt bold, Body Arial 11pt, 1 inch margins. Matched from FT-001/FT-007 existing docx inspection.'},
+    {id:'t_ccfp_003',title:'[Claude Code] md_to_docx.py conversion script saved (rerunnable)',due:today,done:true,priority:2,project:'proj_work',time:'23:52',notes:'C:\\Users\\lowes\\Desktop\\ZENODO_UPLOAD\\Formal_Papers\\md_to_docx.py. Handles YAML frontmatter stripping, heading extraction, bold/italic inline, tables, bullet/numbered lists, blockquotes, code blocks. Rerunnable after edits.'},
+    {id:'t_ccfp_004',title:'[Claude Code] Session note posted to vault AI Chat folder',due:today,done:true,priority:1,project:'proj_work',time:'23:55',notes:'AI Chat/Claude_Session_2026-03-21_Formal_Papers_Conversion.md. Full session summary with style specs, file list, next steps.'},
+  ];
+  seedTasks.forEach(t=>{ if(!tasks.find(x=>x.id===t.id)) tasks.push(t); });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  localStorage.setItem(SEED_KEY, '1');
+})();
+
+// ── SEED: Claude Opus session 2026-03-21 — Theophysics v3 Vault Rebuild + 7Q Engine Template ──
+(function seedOpusVaultRebuild20260321(){
+  const SEED_KEY = 'pof2828_seeded_opus_vault_rebuild_20260321';
+  if(localStorage.getItem(SEED_KEY)) return;
+  const today = '2026-03-21';
+  const tomorrow = '2026-03-22';
+  const seedTasks = [
+    // ═══ PHASE 0: BACKUP ═══
+    {id:'t_vr_001',title:'[Opus] Full vault backup — _Theophysics_v3 → _Theophysics_v3_BACKUP_20260321',due:today,done:true,priority:2,project:'proj_research',time:'11:00',notes:'Complete copy of entire vault to C:\\Users\\lowes\\Documents\\_Theophysics_v3_BACKUP_20260321. Excludes node_modules and .smart-env.'},
+
+    // ═══ PHASE 1: CLEAN FOUNDATION ═══
+    {id:'t_vr_010',title:'[Opus] Deleted 13 duplicate templates from Templates/',due:today,done:true,priority:2,project:'proj_research',time:'11:10',notes:'Removed: PHYSICS_THESIS 1.md, PHYSICS_THESIS 1 1.md, Research Question 1.md, PHYSICS_MATH_FORMALISM 1.md, TEMPLATE Universal Inquiry Workflow 1/1 1/2.md, Universal_Research_Contradiction_Engine 1.md, Master Research System 1.md, Untitled.md/1/2, Not Yaml.md.'},
+    {id:'t_vr_011',title:'[Opus] Restructured Templates/ into 5 subdirectories (_CANON/_AI/_PIPELINE/_PERIODIC/_ARCHIVE)',due:today,done:true,priority:3,project:'proj_research',time:'11:20',notes:'_CANON (26 best templates), _AI (5 AI session/memory), _PIPELINE (8 publication), _PERIODIC (2 daily/weekly), _ARCHIVE (23 everything else). 00_README.md stays at root.'},
+    {id:'t_vr_012',title:'[Opus] Removed 10 dead plugin directories from .obsidian/plugins/',due:today,done:true,priority:2,project:'proj_research',time:'11:30',notes:'Deleted: obsidian-semantic-ai-OLD-BACKUP, obsidian-semantic-ai-tagger, abbreviations, folders2graph, graph-banner, just-share-please, notemd, note-atomizer, obsidian-advanced-uri, math-in-callout. None in community-plugins.json.'},
+    {id:'t_vr_013',title:'[Opus] Cleaned 7 broken files from 08_RESEARCH_TOOLKIT/',due:today,done:true,priority:2,project:'proj_research',time:'11:35',notes:'Deleted: 00_INDEX_BROKEN.md, 900_IN8DEX.md, 9i900_INDEX.md, 9.md, Untitled.md, Untitled 1.md, MAP_Research_Lifecycle_BROKEN.md. Kept 00_INDEX.md as canonical.'},
+    {id:'t_vr_014',title:'[Opus] Cleaned vault root — moved 5 files to Archive + RESEARCH_LINKS',due:today,done:true,priority:2,project:'proj_research',time:'11:40',notes:'Moved to 00_ARCHIVE: Dashboard++.md, THEOPHYSICS_UNIFIED_MASTER.xlsx, Universal_7Facet_TruthLayer.xlsx, theophysics_cache.db, Desktop.ini. Moved RESEARCH_LINKS_THEOPHYSICS_SPIDER.md to RESEARCH_LINKS/.'},
+    {id:'t_vr_015',title:'[Opus] CSS consolidation — 67 snippets archived, 10 active kept',due:today,done:true,priority:3,project:'proj_research',time:'11:50',notes:'Kept: 00_theophysics-variables (new), Easy Multi-Column, dashboard, dashboard-ReadLineLength, theophysics-tabbed-axiom-shell, axiom-badges, axiom-inline-callouts, axioms-dashboard, axiom-domain-colors, axiom-column-layout. 67 archived to _ARCHIVE_CSS/.'},
+
+    // ═══ PHASE 2: CORE RESEARCH INFRASTRUCTURE ═══
+    {id:'t_vr_020',title:'[Opus] Citation system created — 04_CITATIONS/ with guide + literature notes template',due:today,done:true,priority:3,project:'proj_research',time:'12:00',notes:'00_SYSTEM/04_CITATIONS/ with CITATION_GUIDE.md, Literature_Notes/ folder. Template: Templates/_CANON/LITERATURE_NOTE.md with 7Q classification section and evidence extraction table.'},
+    {id:'t_vr_021',title:'[Opus] Research journal system — 05_JOURNAL/ with daily + weekly templates',due:today,done:true,priority:3,project:'proj_research',time:'12:10',notes:'00_SYSTEM/05_JOURNAL/ folder. DAILY_NOTE.md: research focus, session log, evidence captured, pipeline progress, open questions. WEEKLY_REVIEW.md: papers advanced, evidence stats, axiom audit, priorities.'},
+    {id:'t_vr_022',title:'[Opus] Daily-notes plugin + Graph view + Dataview fully configured',due:today,done:true,priority:3,project:'proj_research',time:'12:20',notes:'Daily-notes: folder→05_JOURNAL, template→DAILY_NOTE. Graph: 7 domain color groups (purple axioms, gold publication, emerald evidence, amber theophysics, cyan AI, blue toolkit, teal citations), arrows on, orphans off. Dataview: inline DV, DataviewJS, HTML, pretty fields all enabled.'},
+    {id:'t_vr_023',title:'[Opus] Workspaces enabled + Bookmarks reorganized as command center',due:today,done:true,priority:2,project:'proj_research',time:'12:30',notes:'Workspaces enabled in core-plugins.json, 6 layouts documented. Bookmarks: 4 groups (COMMAND CENTER, ACTIVE PAPERS, REFERENCE, SYSTEM).'},
+
+    // ═══ PHASE 3: VISUAL RESEARCH TOOLS ═══
+    {id:'t_vr_030',title:'[Opus] 5 named canvases built — Master Eq, Pipeline, Ten Laws, Evidence, Domain Map',due:today,done:true,priority:3,project:'proj_research',time:'12:45',notes:'MASTER_EQUATION_CANVAS: 10 vars + symmetry pairs + Hubble. PUBLICATION_PIPELINE: 15-step flow with 2 gates. TEN_LAWS: dual physics/theology projection. EVIDENCE_TOPOLOGY: claims-evidence wiring map. THEOPHYSICS_DOMAIN_MAP: high-level architecture.'},
+
+    // ═══ PHASE 4: AUTOMATION & WORKFLOWS ═══
+    {id:'t_vr_040',title:'[Opus] Templater configured — 4 folder templates + Git Bash + user scripts',due:today,done:true,priority:3,project:'proj_research',time:'13:15',notes:'Folder templates: Axioms→AXIOM_TEMPLATE, Publication→page_template_paper, Journal→DAILY_NOTE, Citations→LITERATURE_NOTE. Shell: C:\\Program Files\\Git\\bin\\bash.exe. Scripts: 00_SYSTEM/01_ENGINE/Scripts.'},
+    {id:'t_vr_041',title:'[Opus] 6 new hotkeys + Research Command Center dashboard built',due:today,done:true,priority:3,project:'proj_research',time:'13:25',notes:'Hotkeys: Ctrl+Shift+D/W/G/K, Alt+T. Dashboard: 00_SYSTEM/03_DASHBOARDS/RESEARCH_COMMAND_CENTER.md with buttons (New Note, Pipeline, Evidence, Journal) + 5 Dataview tables (pipeline, evidence, axioms, journal, stalled).'},
+    {id:'t_vr_042',title:'[Opus] Epistemic tagger cleaned — removed Postgres creds, set theophysics profile',due:today,done:true,priority:2,project:'proj_research',time:'13:35',notes:'Removed hardcoded postgresql://Yellowkid:Moss9pep2828 creds. activeProfile→theophysics. 6 levels: Axiom (purple), Forced Conclusion (gold), Strong Evidence (green), Candidate (orange), Speculative (cyan), Falsified (red).'},
+
+    // ═══ PHASE 5: PUBLICATION ACCELERATION ═══
+    {id:'t_vr_050',title:'[Opus] Paper triage + Evidence ingest protocol + Publication dashboard created',due:today,done:true,priority:3,project:'proj_research',time:'13:50',notes:'PAPER_TRIAGE.md: advance/kill/defer framework. EVIDENCE_INGEST_PROTOCOL.md: 5-step process, 12→50+ claims target. PUBLICATION_DASHBOARD.md: 6 Dataview blocks for pipeline/gate/coverage/stalled tracking.'},
+
+    // ═══ PHASE 6: POLISH ═══
+    {id:'t_vr_060',title:'[Opus] CSS variables file + frontmatter script created',due:today,done:true,priority:2,project:'proj_research',time:'14:05',notes:'00_theophysics-variables.css: canonical :root palette (domain colors, epistemic levels, UI vars, typography). add_frontmatter.js: Templater user script, detects folder context, generates type/tags.'},
+
+    // ═══ 7Q ENGINE ═══
+    {id:'t_vr_070',title:'[Opus] 7Q Engine Spec saved to vault — full plugin specification document',due:today,done:true,priority:3,project:'proj_research',time:'14:30',notes:'00_SYSTEM/7Q_ENGINE_SPEC.md. Complete spec: Q0-Q7 fields, dropdowns, AI prompts, guided sentence builder, truth score (T=w1S+w2E+w3L+w4D+w5P+w6C), cluster aggregation, confidence classification, Dataview queries, Obsidian Forge plugin architecture, output pipeline.'},
+    {id:'t_vr_071',title:'[Opus] 7Q Engine fillable template — Templater-ready with auto UUID + truth score',due:today,done:true,priority:3,project:'proj_research',time:'14:45',notes:'Templates/_CANON/7Q_ENGINE.md. Auto UUID via Templater. Q0 checkbox. 7 sections with guided builder, AI assist callouts, sub-questions. Full YAML frontmatter. Completion tracking (q_score). Truth score table (S/E/L/D/P/C→T). Sits alongside existing 4 templates.'},
+
+    // ═══ STILL OPEN ═══
+    {id:'t_vr_080',title:'7Q Acronym — seven letters, one word, Q0 sits outside',due:tomorrow,done:false,priority:1,project:'proj_research',time:'',notes:'Must be memorable, pronounceable, carry meaning. Each letter IS a question. Not locked yet.'},
+    {id:'t_vr_081',title:'Install Zotero 7 + BetterBibTeX + obsidian-citation-plugin',due:tomorrow,done:false,priority:2,project:'proj_work',time:'',notes:'zotero.org → BetterBibTeX plugin → obsidian-citation-plugin via BRAT. Completes citation pipeline.'},
+    {id:'t_vr_082',title:'Save 6 workspace layouts in Obsidian UI (Ctrl+Shift+W)',due:tomorrow,done:false,priority:1,project:'proj_work',time:'',notes:'Writing, Evidence Review, Axiom Audit, Pipeline, Research (AI), Publication. Guide: WORKSPACE_GUIDE.md.'},
+    {id:'t_vr_083',title:'Verify smart-connections index after vault restructure',due:tomorrow,done:false,priority:1,project:'proj_work',time:'',notes:'Open vault, let smart-connections reindex 14K+ notes.'},
+    {id:'t_vr_084',title:'O:\\_Theophysics_v4 — 7Q reverse proof + researcher template build',due:tomorrow,done:false,priority:2,project:'proj_research',time:'',notes:'Three-layer vision: identity (Q0), method (7Q), engine room (AI partner). Hidden depth architecture. Best researcher template on the web.'},
+  ];
+  seedTasks.forEach(t=>{ if(!tasks.find(x=>x.id===t.id)) tasks.push(t); });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  localStorage.setItem(SEED_KEY, '1');
+})();
+
+(function seedOpus20260322(){
+  const SEED_KEY = 'pof2828_seeded_opus_2026_03_22';
+  if(localStorage.getItem(SEED_KEY)) return;
+  const today = '2026-03-22';
+  const seedTasks = [
+    {id:'t_op_100',title:'[Opus] Scored The Bidirectional paper (4 tools: CKG/Domain/Review/7Q)',due:today,done:true,priority:2,project:'proj_research',time:'22:40',notes:'$0.075 cost. T-score from 7Q output. All results in Data Vault/The_Bidirectional/.'},
+    {id:'t_op_101',title:'[Opus] Created Data Vault at O:\\_Theophysics_v4\\Data Vault',due:today,done:true,priority:2,project:'proj_work',time:'22:50',notes:'Centralized scoring data. Subfolders: AXIOMS_SCORED, CONSCIOUSNESS_PAPERS, The_Bidirectional, FP-008.'},
+    {id:'t_op_102',title:'[Opus] Batch-scored 65 axioms (A/E/T/Omega series) — $4.27',due:today,done:true,priority:1,project:'proj_research',time:'23:15',notes:'326 output files in Data Vault/AXIOMS_SCORED/. 65 papers x 5 outputs each. One API error on T13.1 review tool.'},
+    {id:'t_op_103',title:'[Opus] Built MASTER_SCORES.xlsx — 67-paper consolidated workbook',due:today,done:true,priority:2,project:'proj_work',time:'23:30',notes:'3 sheets: Leaderboard (sorted by T-score), 7Q Heatmap (conditional formatting), Summary Stats.'},
+    {id:'t_op_104',title:'[Opus] Built knowledge graph — 966 nodes, 914 edges',due:today,done:true,priority:1,project:'proj_research',time:'23:45',notes:'Injected into knowledge_graph_viewer.html. 6 node types, 26 edge types. Cytoscape.js viewer.'},
+    {id:'t_op_105',title:'[Opus] Copied 36 Excel files from B:\\transfer to Desktop catalog',due:today,done:true,priority:3,project:'proj_work',time:'00:00',notes:'EXCEL_FROM_TRANSFER/ folder on Desktop. 257 sheets across 12 key workbooks identified.'},
+    {id:'t_op_106',title:'[Opus] Converted Chi Field Paper .docx to markdown, wired into vault',due:today,done:true,priority:2,project:'proj_research',time:'00:15',notes:'CHI_FIELD_PAPER_LOWE_2026.md in 00_Canonical/. Added to CANONICAL_INDEX and Master-Equation.md. Historical docs moved to _Documentation/.'},
+    {id:'t_op_107',title:'[Opus] Gap analysis — bottom 15 axioms cross-referenced with Excel data',due:today,done:true,priority:2,project:'proj_research',time:'00:30',notes:'Universal weak dimension: Q4 Evidence. ~40% of fix data already exists in Excel files but not routed into axiom files.'},
+    {id:'t_op_108',title:'[Opus] Built FORMAL_PAPER_TEMPLATE.md — master template with all slots',due:today,done:true,priority:1,project:'proj_work',time:'01:00',notes:'Gate notice, 7Q Rigor Card, FACTS At A Glance, Media Block (TTS/podcast/GDrive), FACTS+UADP body, Pipeline Scoring Output, Audit Block.'},
+    {id:'t_op_109',title:'[Opus] Created __DO_THIS_EVERY_PAPER gate folder with 5 templates',due:today,done:true,priority:1,project:'proj_work',time:'01:30',notes:'04_THEOPYHISCS/FORMAL_PAPERS/. 00_READ_THIS_FIRST + Paper I/II/III templates + Audit template. Also copied to 00_Publication/ and Templates/.'},
+    {id:'t_op_110',title:'[Opus] Scored 2 consciousness papers — Hard Problem (0.844) + Chi Action (0.825)',due:today,done:true,priority:2,project:'proj_research',time:'02:00',notes:'Both STRONG tier. $0.16 total. Results in Data Vault/CONSCIOUSNESS_PAPERS/. Q4 Evidence weakest on both.'},
+    {id:'t_op_111',title:'[Opus] Audited full scoring engine — 9 tools, 161 questions cataloged',due:today,done:true,priority:1,project:'proj_research',time:'02:30',notes:'4 default tools + vault_rater + prosecution standard + TSR-100 + 4 adversarial reviewers + decompress + YAML copilot. Proposed consolidation to 52 questions in 3 calls.'},
+    {id:'t_op_112',title:'[Opus] Identified Tabbed Callout CSS issue for Quartz publish',due:today,done:true,priority:3,project:'proj_work',time:'02:45',notes:'Tabbed Callout.css creates Ring 2/Ring 3 green pill boxes. Uses radio buttons — won\'t render in Quartz. Must strip or port before publish.'},
+    {id:'t_op_113',title:'[Opus] Proposed new 3-call pipeline: Academic + 7Q + Prosecution',due:today,done:false,priority:1,project:'proj_research',time:'',notes:'17 free Python checks + 35 paid questions = 52 data points. ~$0.10/paper vs current $0.20. Awaiting David decision on final question set.'},
+  ];
+  seedTasks.forEach(t=>{ if(!tasks.find(x=>x.id===t.id)) tasks.push(t); });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  localStorage.setItem(SEED_KEY, '1');
+})();
+
 let projects = JSON.parse(localStorage.getItem(PROJ_KEY) || 'null') || [...DEFAULT_PROJECTS];
 let summaries = JSON.parse(localStorage.getItem(SUMMARY_KEY) || '{}');
 let prefs = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}');
