@@ -1233,11 +1233,36 @@ def main():
     if REMOTE_API:
         import threading, urllib.request as _urllib_req
 
+        # Persist synced IDs to file so we don't re-push after restart
+        SYNC_STATE_FILE = os.path.join(DATA_DIR, "sync_state.json")
+
+        def _load_sync_state():
+            """Load set of already-synced IDs from disk."""
+            try:
+                with open(SYNC_STATE_FILE, "r") as f:
+                    data = json.load(f)
+                return {
+                    "bookmarks": set(data.get("bookmarks", [])),
+                    "prompts": set(data.get("prompts", [])),
+                    "clips": set(data.get("clips", [])),
+                }
+            except (FileNotFoundError, json.JSONDecodeError):
+                return {"bookmarks": set(), "prompts": set(), "clips": set()}
+
+        def _save_sync_state(state):
+            """Persist synced IDs to disk."""
+            try:
+                with open(SYNC_STATE_FILE, "w") as f:
+                    json.dump({k: list(v) for k, v in state.items()}, f)
+            except IOError:
+                pass
+
         def _auto_sync_loop():
-            """Push local bookmarks, prompts, and clips to Cloudflare every 5 minutes."""
+            """Push local bookmarks, prompts, and clips to Cloudflare every 5 minutes.
+            Only pushes items whose local ID hasn't been synced yet (persisted across restarts)."""
             import time as _time
             SYNC_INTERVAL = 300  # seconds
-            synced_clip_ids = set()  # track already-synced clips to avoid duplicates
+            synced = _load_sync_state()
             _time.sleep(10)  # initial delay to let server fully start
             while True:
                 try:
@@ -1248,10 +1273,13 @@ def main():
                     if REMOTE_TOKEN:
                         headers["Authorization"] = f"Bearer {REMOTE_TOKEN}"
 
+                    changed = False
+
                     for dtype in ("bookmarks", "prompts"):
                         local_data = getattr(store, dtype, [])
+                        new_items = [i for i in local_data if i.get("id", "") not in synced[dtype]]
                         pushed = 0
-                        for item in local_data:
+                        for item in new_items:
                             try:
                                 if dtype == "prompts":
                                     payload = {
@@ -1272,14 +1300,17 @@ def main():
                                 )
                                 with _urllib_req.urlopen(req, timeout=10) as resp:
                                     resp.read()
+                                synced[dtype].add(item.get("id", ""))
                                 pushed += 1
+                                changed = True
                             except Exception:
                                 pass
-                        print(f"[auto-sync] Pushed {pushed}/{len(local_data)} {dtype}")
+                        if new_items:
+                            print(f"[auto-sync] Pushed {pushed}/{len(new_items)} new {dtype}")
 
                     # Sync clipboard history — only push NEW clips since last sync
                     clips = getattr(store, "clips", [])
-                    new_clips = [c for c in clips if c.get("id") not in synced_clip_ids]
+                    new_clips = [c for c in clips if c.get("id", "") not in synced["clips"]]
                     clip_pushed = 0
                     for clip in new_clips:
                         try:
@@ -1298,12 +1329,17 @@ def main():
                             )
                             with _urllib_req.urlopen(req, timeout=10) as resp:
                                 resp.read()
-                            synced_clip_ids.add(clip.get("id"))
+                            synced["clips"].add(clip.get("id", ""))
                             clip_pushed += 1
+                            changed = True
                         except Exception:
                             pass
-                    if clip_pushed or new_clips:
-                        print(f"[auto-sync] Pushed {clip_pushed}/{len(new_clips)} new clips ({len(synced_clip_ids)} total synced)")
+                    if new_clips:
+                        print(f"[auto-sync] Pushed {clip_pushed}/{len(new_clips)} new clips")
+
+                    # Save state so we don't re-push after restart
+                    if changed:
+                        _save_sync_state(synced)
 
                 except Exception as e:
                     print(f"[auto-sync] Error: {e}")
