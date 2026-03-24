@@ -759,28 +759,45 @@ UI_Test() {
 }
 
 UI_Export() {
-    global gShell, gItems
+    global gShell, gItems, gPrompts
     code := "#Requires AutoHotkey v2.0+`n#SingleInstance Force`n`n"
     code .= "; Exported from AI-HUB v2`n"
     code .= "; " FormatTime(A_Now, "yyyy-MM-dd HH:mm") "`n`n"
-    for it in gItems {
-        if it.Kind = "Hotkey" {
-            if it.HasProp("Action") && it.Action = "run"
-                code .= it.Trigger ":: {`n    Run " Dq(it.Output) "`n}`n`n"
-            else
-                code .= it.Trigger ":: {`n    SendText(" Dq(it.Output) ")`n}`n`n"
-        } else {
-            opts := it.HasProp("Opts") ? it.Opts : "*C"
-            code .= ":" opts ":" it.Trigger "::" it.Output "`n"
+
+    ; --- Export Shortcuts (hotkeys + hotstrings) ---
+    if gItems.Length > 0 {
+        code .= "; ========== SHORTCUTS ==========`n`n"
+        for it in gItems {
+            if it.Kind = "Hotkey" {
+                if it.HasProp("Action") && it.Action = "run"
+                    code .= it.Trigger ":: {`n    Run " Dq(it.Output) "`n}`n`n"
+                else
+                    code .= it.Trigger ":: {`n    SendText(" Dq(it.Output) ")`n}`n`n"
+            } else {
+                opts := it.HasProp("Opts") ? it.Opts : "*C"
+                code .= ":" opts ":" it.Trigger "::" it.Output "`n"
+            }
         }
     }
+
     gShell.gui.Opt("+OwnDialogs")
     path := FileSelect("S16", A_ScriptDir "\exported_shortcuts.ahk", "Export AHK", "AHK (*.ahk)")
     if !path
         return
+
+    ; Also copy prompts.json next to the exported .ahk as backup
+    promptExportMsg := ""
+    if gPrompts.Length > 0 {
+        exportDir := RegExReplace(path, "\\[^\\]+$", "")
+        try {
+            FileCopy(PROMPTS_FILE, exportDir "\prompts.json", true)
+            promptExportMsg := " + " gPrompts.Length " prompts (prompts.json)"
+        }
+    }
+
     try FileDelete(path)
     FileAppend(code, path)
-    UI_Status("Exported: " path)
+    UI_Status("Exported " gItems.Length " shortcuts" promptExportMsg)
 }
 
 UI_ClearEditor() {
@@ -1029,39 +1046,53 @@ LoadPrompts() {
     if !FileExist(PROMPTS_FILE)
         return
     try {
-        jsonStr := FileRead(PROMPTS_FILE, "UTF-8")
-        if jsonStr = "" || jsonStr = "[]"
-            return
-        jsonStr := Trim(jsonStr)
-        if SubStr(jsonStr, 1, 1) != "["
-            return
-        pattern := '\{"name":"([^"]*)".*?"template":"((?:[^"\\]|\\.)*)"'
-        pos := 1
-        while RegExMatch(jsonStr, pattern, &m, pos) {
-            ; Find the end of this object
-            objStart := m.Pos
-            objEnd := InStr(jsonStr, "}", , objStart)
-            objStr := SubStr(jsonStr, objStart, objEnd - objStart + 1)
+        ; Line-by-line parser — avoids PCRE backtracking on large templates
+        curName := "", curTemplate := "", curShortcut := ""
+        curReplace := true, curPopup := false, inObject := false
 
-            ; Extract optional fields
-            shortcut := ""
-            if RegExMatch(objStr, '"shortcut"\s*:\s*"([^"]*)"', &sm)
-                shortcut := sm[1]
-            replaceVal := true
-            if RegExMatch(objStr, '"replace"\s*:\s*(true|false)', &rm)
-                replaceVal := (rm[1] = "true")
-            popupVal := false
-            if RegExMatch(objStr, '"popup"\s*:\s*(true|false)', &pm)
-                popupVal := (pm[1] = "true")
+        Loop Read PROMPTS_FILE {
+            line := Trim(A_LoopReadLine)
 
-            gPrompts.Push({
-                name: UnescapeJSON(m[1]),
-                template: UnescapeJSON(m[2]),
-                shortcut: shortcut,
-                replace: replaceVal,
-                popup: popupVal
-            })
-            pos := objEnd + 1
+            ; Start of object
+            if (SubStr(line, 1, 1) = "{") {
+                inObject := true
+                curName := ""
+                curTemplate := ""
+                curShortcut := ""
+                curReplace := true
+                curPopup := false
+                continue
+            }
+
+            if !inObject
+                continue
+
+            ; End of object — save if we got name + template
+            if (SubStr(line, 1, 1) = "}") {
+                if (curName != "" && curTemplate != "") {
+                    gPrompts.Push({
+                        name: UnescapeJSON(curName),
+                        template: UnescapeJSON(curTemplate),
+                        shortcut: curShortcut,
+                        replace: curReplace,
+                        popup: curPopup
+                    })
+                }
+                inObject := false
+                continue
+            }
+
+            ; Extract "key": "value" or "key": true/false from each line
+            if RegExMatch(line, '^"name"\s*:\s*"((?:[^"\\]|\\.)*)"', &m)
+                curName := m[1]
+            else if RegExMatch(line, '^"template"\s*:\s*"((?:[^"\\]|\\.)*)"', &m)
+                curTemplate := m[1]
+            else if RegExMatch(line, '^"shortcut"\s*:\s*"([^"]*)"', &m)
+                curShortcut := m[1]
+            else if RegExMatch(line, '^"replace"\s*:\s*(true|false)', &m)
+                curReplace := (m[1] = "true")
+            else if RegExMatch(line, '^"popup"\s*:\s*(true|false)', &m)
+                curPopup := (m[1] = "true")
         }
     }
     RegisterPromptShortcuts()
@@ -1099,9 +1130,9 @@ RegisterPromptShortcuts() {
         if !p.HasProp("shortcut") || p.shortcut = ""
             continue
         
-        ; Register immediate slash commands like /probe without requiring a trailing space.
+        ; Register slash commands: type /command + space to expand.
         shortcut := "/" p.shortcut
-        sig := ":*?:" shortcut
+        sig := ":?:" shortcut
         
         ; Store the index and use a handler that looks it up
         try {
@@ -1120,8 +1151,8 @@ RunPromptShortcut(index, *) {
 
     p := gPrompts[index]
 
-    ; Clear the typed shortcut by backspacing
-    shortcutLen := StrLen("/" p.shortcut)
+    ; Clear the typed shortcut + ending char (space) by backspacing
+    shortcutLen := StrLen("/" p.shortcut) + 1
     Send("{Backspace " shortcutLen "}")
     Sleep(50)
 

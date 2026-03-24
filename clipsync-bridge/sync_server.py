@@ -727,9 +727,16 @@ class ClipboardMonitor:
     def _win32_get_clipboard(self):
         """Read clipboard using ctypes (Windows, no dependencies)."""
         import ctypes
+        import ctypes.wintypes as wt
         CF_UNICODETEXT = 13
         user32 = ctypes.windll.user32
         kernel32 = ctypes.windll.kernel32
+
+        # Fix 64-bit pointer truncation: declare proper return/arg types
+        user32.GetClipboardData.restype = ctypes.c_void_p
+        kernel32.GlobalLock.argtypes = [ctypes.c_void_p]
+        kernel32.GlobalLock.restype = ctypes.c_void_p
+        kernel32.GlobalUnlock.argtypes = [ctypes.c_void_p]
 
         if not user32.OpenClipboard(0):
             return None
@@ -1104,10 +1111,10 @@ class BridgeHandler(SimpleHTTPRequestHandler):
 
     def _handle_sync(self, body):
         """Sync local data with remote ClipSync PWA."""
-        if not REMOTE_API or not REMOTE_TOKEN:
+        if not REMOTE_API:
             return self._json_response({
                 "status": "error",
-                "message": "CLIPSYNC_REMOTE and CLIPSYNC_TOKEN env vars not set"
+                "message": "CLIPSYNC_REMOTE env var not set"
             }, 400)
 
         direction = body.get("direction", "push")  # push, pull, or both
@@ -1118,25 +1125,53 @@ class BridgeHandler(SimpleHTTPRequestHandler):
             import urllib.request
 
             headers = {
-                "Authorization": f"Bearer {REMOTE_TOKEN}",
                 "Content-Type": "application/json",
+                "User-Agent": "ClipSync-Bridge/1.0",
             }
+            if REMOTE_TOKEN:
+                headers["Authorization"] = f"Bearer {REMOTE_TOKEN}"
 
             if "push" in direction or direction == "both":
-                # Push local data to remote
+                # Push local data to remote (individual POSTs)
                 for dtype in types:
                     local_data = getattr(store, dtype, [])
-                    req = urllib.request.Request(
-                        f"{REMOTE_API}/api/{dtype}/bulk",
-                        data=json.dumps(local_data).encode("utf-8"),
-                        headers=headers,
-                        method="POST",
-                    )
-                    try:
-                        with urllib.request.urlopen(req, timeout=10) as resp:
-                            results[f"push_{dtype}"] = json.loads(resp.read())
-                    except Exception as e:
-                        results[f"push_{dtype}"] = {"error": str(e)}
+                    pushed, errors = 0, 0
+                    for item in local_data:
+                        try:
+                            # Transform to worker format per type
+                            if dtype == "prompts":
+                                payload = {
+                                    "title": item.get("name", ""),
+                                    "content": item.get("content", ""),
+                                    "folder": "prompts",
+                                    "tags": item.get("tags", ["prompt"]),
+                                    "template": item.get("content", ""),
+                                    "shortcut": item.get("hotkey", ""),
+                                }
+                            elif dtype == "clips":
+                                payload = {
+                                    "title": (item.get("title") or item.get("content", ""))[:80],
+                                    "content": item.get("content", ""),
+                                    "type": "clip",
+                                    "folder": "clips",
+                                    "tags": item.get("tags", ["clipboard"]),
+                                }
+                            else:
+                                payload = item
+                            # Clips go to /api/items; others to /api/{type}
+                            endpoint = "items" if dtype == "clips" else dtype
+                            req = urllib.request.Request(
+                                f"{REMOTE_API}/api/{endpoint}",
+                                data=json.dumps(payload).encode("utf-8"),
+                                headers=headers,
+                                method="POST",
+                            )
+                            with urllib.request.urlopen(req, timeout=10) as resp:
+                                resp.read()
+                            pushed += 1
+                        except Exception:
+                            errors += 1
+                    results[f"push_{dtype}"] = {"pushed": pushed, "errors": errors}
 
             if "pull" in direction or direction == "both":
                 # Pull remote data to local
@@ -1147,11 +1182,13 @@ class BridgeHandler(SimpleHTTPRequestHandler):
                     )
                     try:
                         with urllib.request.urlopen(req, timeout=10) as resp:
-                            remote_data = json.loads(resp.read())
+                            raw = json.loads(resp.read())
+                            # Worker returns {"items":[...]} or bare array
+                            remote_data = raw.get("items", raw) if isinstance(raw, dict) else raw
                             results[f"pull_{dtype}"] = {"count": len(remote_data)}
                             # Merge: remote items not in local get added
-                            local_ids = {item["id"] for item in getattr(store, dtype, [])}
-                            new_items = [item for item in remote_data if item["id"] not in local_ids]
+                            local_ids = {item.get("id", "") for item in getattr(store, dtype, [])}
+                            new_items = [item for item in remote_data if item.get("id", "") not in local_ids]
                             if new_items:
                                 getattr(store, dtype).extend(new_items)
                                 getattr(store, f"save_{dtype}")()
@@ -1191,6 +1228,90 @@ def main():
         monitor = ClipboardMonitor(store, CLIPBOARD_INTERVAL)
         monitor.start()
         print("[clipboard] Monitor started")
+
+    # Start auto-sync to Cloudflare (every 5 minutes)
+    if REMOTE_API:
+        import threading, urllib.request as _urllib_req
+
+        def _auto_sync_loop():
+            """Push local bookmarks, prompts, and clips to Cloudflare every 5 minutes."""
+            import time as _time
+            SYNC_INTERVAL = 300  # seconds
+            synced_clip_ids = set()  # track already-synced clips to avoid duplicates
+            _time.sleep(10)  # initial delay to let server fully start
+            while True:
+                try:
+                    headers = {
+                        "Content-Type": "application/json",
+                        "User-Agent": "ClipSync-Bridge/1.0",
+                    }
+                    if REMOTE_TOKEN:
+                        headers["Authorization"] = f"Bearer {REMOTE_TOKEN}"
+
+                    for dtype in ("bookmarks", "prompts"):
+                        local_data = getattr(store, dtype, [])
+                        pushed = 0
+                        for item in local_data:
+                            try:
+                                if dtype == "prompts":
+                                    payload = {
+                                        "title": item.get("name", ""),
+                                        "content": item.get("content", ""),
+                                        "folder": "prompts",
+                                        "tags": item.get("tags", ["prompt"]),
+                                        "template": item.get("content", ""),
+                                        "shortcut": item.get("hotkey", ""),
+                                    }
+                                else:
+                                    payload = item
+                                req = _urllib_req.Request(
+                                    f"{REMOTE_API}/api/{dtype}",
+                                    data=json.dumps(payload).encode("utf-8"),
+                                    headers=headers,
+                                    method="POST",
+                                )
+                                with _urllib_req.urlopen(req, timeout=10) as resp:
+                                    resp.read()
+                                pushed += 1
+                            except Exception:
+                                pass
+                        print(f"[auto-sync] Pushed {pushed}/{len(local_data)} {dtype}")
+
+                    # Sync clipboard history — only push NEW clips since last sync
+                    clips = getattr(store, "clips", [])
+                    new_clips = [c for c in clips if c.get("id") not in synced_clip_ids]
+                    clip_pushed = 0
+                    for clip in new_clips:
+                        try:
+                            payload = {
+                                "title": (clip.get("title") or clip.get("content", ""))[:80],
+                                "content": clip.get("content", ""),
+                                "type": "clip",
+                                "folder": "clips",
+                                "tags": clip.get("tags", ["clipboard"]),
+                            }
+                            req = _urllib_req.Request(
+                                f"{REMOTE_API}/api/items",
+                                data=json.dumps(payload).encode("utf-8"),
+                                headers=headers,
+                                method="POST",
+                            )
+                            with _urllib_req.urlopen(req, timeout=10) as resp:
+                                resp.read()
+                            synced_clip_ids.add(clip.get("id"))
+                            clip_pushed += 1
+                        except Exception:
+                            pass
+                    if clip_pushed or new_clips:
+                        print(f"[auto-sync] Pushed {clip_pushed}/{len(new_clips)} new clips ({len(synced_clip_ids)} total synced)")
+
+                except Exception as e:
+                    print(f"[auto-sync] Error: {e}")
+                _time.sleep(SYNC_INTERVAL)
+
+        sync_thread = threading.Thread(target=_auto_sync_loop, daemon=True)
+        sync_thread.start()
+        print(f"[auto-sync] Background sync to {REMOTE_API} every 5 min")
 
     # Start HTTP server — suppress noisy ConnectionResetError from polling clients
     class QuietHTTPServer(HTTPServer):
